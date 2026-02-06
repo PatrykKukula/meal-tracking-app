@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: Eureka Server
+  config:
+    import: optional:configserver:http://localhost:9021
 
 eureka:
   instance:
@@ -28,3 +30,12 @@ management:
     health:
       probes:
         enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "Eureka Server"
+    description: "Service discovery agent in Meal Tracking Application"
+    version: 1.0.0
