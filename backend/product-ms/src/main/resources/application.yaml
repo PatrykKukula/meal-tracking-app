@@ -1,0 +1,71 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Product Microservice
+  config:
+    import: optional:configserver:http://localhost:9021/
+  datasource:
+    url: jdbc:postgresql://localhost:5433/productdb
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    drive-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:7080/realms/MealTrackingApp
+          jwk-set-uri: http://127.0.0.1:7080/realms/MealTrackingApp/protocol/openid-connect/certs
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "Product MS"
+    description: "Microservice for Products in Meal Tracking Application"
+    version: 1.0.0
+
+logging:
+  level:
+    io:
+      github:
+        patrykkukula:
+          product-ms: TRACE
+    org:
+      springframework:
+        security: TRACE
+  pattern:
+    console: "%d{HH:mm:ss} [correlation-id:%X{correlation-id}] %-5level %logger - %msg%n"

@@ -1,0 +1,16 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:9021/
+    activate:
+      on-profile: "test"
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: "sa"
+    password: ""
+    drive-class-name: org.h2.Driver
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
