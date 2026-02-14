@@ -1,5 +1,6 @@
-HELP.md
+backend/product-ms/HELP.md
 target/
+frontend/read/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -32,8 +33,8 @@ build/
 ### VS Code ###
 .vscode/
 
-.claude/cache/           # Cache Claude
-.claude/logs/            # Logi sesji
-.claude/.env             # Sekretne klucze API
-.claude/session-*.json   # Tymczasowe sesje
-.claude/temp/            # Pliki tymczasowe
+.claude/cache/
+.claude/logs/
+.claude/.env
+.claude/session-*.json
+.claude/temp/

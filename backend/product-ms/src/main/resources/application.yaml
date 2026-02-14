@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: Product Microservice
+    name: product
   config:
     import: optional:configserver:http://localhost:9021/
   datasource:
@@ -22,8 +22,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://127.0.0.1:7080/realms/MealTrackingApp
-          jwk-set-uri: http://127.0.0.1:7080/realms/MealTrackingApp/protocol/openid-connect/certs
+          issuer-uri: http://localhost:7080/realms/MealTrackingApp
+          jwk-set-uri: http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs
 
 eureka:
   instance:
