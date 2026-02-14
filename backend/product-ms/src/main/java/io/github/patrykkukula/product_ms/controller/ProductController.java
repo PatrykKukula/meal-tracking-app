@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "api/products", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto productDto, HttpServletRequest request) {
+        log.info("Request coming: {} ms", System.currentTimeMillis());
         ProductDto addedProduct = productService.addProduct(productDto);
 
         return ResponseEntity.created(setLocation(addedProduct.getProductId(), request)).body(addedProduct);

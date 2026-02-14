@@ -15,32 +15,30 @@ import lombok.Setter;
 @AllArgsConstructor
 @Data
 public class ProductDto {
-    @JsonIgnore
     private Long productId;
 
-    @NotEmpty(message = "Product name cannot be null or empty")
+    @NotEmpty(message = "Product name cannot empty")
     @Size(max = 64, message = "Product name cannot exceed 64 characters")
     private String name;
 
-    @NotNull(message = "Product category cannot be null")
+    @NotNull(message = "Product category must be valid option")
     private ProductCategory productCategory;
 
     @PositiveOrZero(message = "Calories cannot be less than 0")
-    @NotNull(message = "Calories cannot be null")
+    @NotNull(message = "Calories is required")
     private Integer calories;
 
     @PositiveOrZero(message = "Protein cannot be less than 0")
-    @NotNull(message = "Protein cannot be null")
+    @NotNull(message = "Protein is required")
     private Integer protein;
 
     @PositiveOrZero(message = "Carbs cannot be less than 0")
-    @NotNull(message = "Carbs cannot be null")
+    @NotNull(message = "Carbs are required")
     private Integer carbs;
 
     @PositiveOrZero(message = "Fat cannot be less than 0")
-    @NotNull(message = "Fat cannot be null")
+    @NotNull(message = "Fat is required")
     private Integer fat;
 
-    @JsonIgnore
     private String ownerUsername;
 }
