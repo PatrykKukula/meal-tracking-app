@@ -6,8 +6,9 @@
 - **Single EntryPoint** - API Gateway (port 8080)
 - **Service Discovery** - Eureka Server
 - **Config Management** - Spring Cloud Config Sever
-- **Authorization** - Keycloak (OAuth2/OIDC)
+- **Authorization** - Keycloak (OAuth2/OIDC) (port 7080)
 - **Frontend** - React 19 + TypeScript + Tailwind
+- **Async** - RabbitMQ
 
 ### CRITICAL: Frontend does not have access to specific microservices.
 Browser communicates only through API Gateway:
@@ -29,86 +30,84 @@ Browser -> API Gateway -> Microservice
     - Zustand (client state management)
     - React Router v6
     - Axios
-    - Keycloak-js (authentication)
+    - Keycloak-js (authentication & authorization)
 
 ### Authentication and Authorization
 - **KeyCloak** as an Authorization Server
 - Flow: Authorization Code + PKCE
 - JWT Token in header: 'Authorization: Bearer {Token}'
-- Automatic refresh token
+- Automatic refresh token with keycloak-js
+- CSRF protection with keycloak-js
 - **DO NOT STORE** token in localStorage - use httpOnly cookies or memory
-- 
+
+Realm name: MealTrackingApp
+Use this Client ID: mealtrackingappclient
+
 ### Authorization errors
 - 401 Unauthorized → user not authenticated (frontend should trigger re-login and display notification)
-- 403 Forbidden → user authenticated but lacks required role - should redirect to route displaying 
-"You do not have access to this page"
+- 403 Forbidden → user authenticated but lacks required role - should redirect to /home route and display notification
 
 ### Ports:
 - API Gateway: 8080
 - Eureka: 8761
 - Config Server: 8888
-- Keycloak: 8180
+- Keycloak: 7080
 - Frontend: 5173 (Vite)
-- Services: 8081-8085 (unreachable for browser)
+- Services: unreachable for browser
 
 ### UI/UX:
 - prefer white/green motives
-- same header should be on top of each page with login button
+- modern style design
+- each page has common navigation bar header with tabs: dashboard, products, login/logout
+- components visibility based on roles and sometimes on user id (refer to gateway-api-spec.md)
 
 ### API Communication (always use this)
 ```typescript
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = 'http://localhost:8080'
 ```
 
 ### API Gateway routing:
 ```
-/api/users/**          → User Management Service 
-/api/diets/**          → Diet Service
-/api/products/**       → Product Service
-/api/profiles/**       → User Profile Service
+/api/profile/**       → User profile Service
+/api/diet/**          → Diet Service
+/api/products/**      → Product Service
+/api/statistics/**    → Statistics Service
 ```
-Email Microservice does not have any API. It communicates asynchronously via RabbitMQ.
 
 ## API Documentation
 **MAIN SOURCE OF TRUTH** `.claude/gateway-api-spec.md`
 
-Specific Microservice details:
-- User Management: `services/user-management-ms/API_SPEC.md`
-- Diet Service: `services/diet-service-ms/API_SPEC.md`
-- Product Service: `services/product-service-ms/API_SPEC.md`
-- User Profile: `services/user-profile-service-ms/API_SPEC.md`
-
 ⚠️ **Always check gateway-api-spec.md first** - real endpoints for frontend are available in there!
 
-API_SPEC.md in every microservice will be updated during project implementation. 
+gateway-api-spec.md will be updated during project implementation. 
 Endpoints may be added, deleted and updated.
+Always check for any changes.
 
 ## Frontend package structure:
 ```
 frontend/src/
-├── app/                    # App setup, routing
-├── features/               # Feature-based organization
-│   ├── auth/              # Keycloak, login, protected routes
+├── app/                   # App setup, routing
+├── features/              # Feature-based organization
+│   ├── auth/              # Keycloak, login, register, protected routes
 │   ├── diet/              # Diet management module
 │   ├── products/          # Products catalog
 │   ├── profile/           # User profile & settings
+│   ├── statistics/        # Statistics
 │   └── dashboard/         # Main dashboard
 ├── shared/
 │   ├── components/        # Reusable UI components
 │   ├── hooks/             # Custom hooks
 │   ├── services/          # API clients
-│   │   ├── api.ts        # Axios instance with interceptors
-│   │   ├── dietApi.ts    # Diet service client
-│   │   ├── productApi.ts # Product service client
-│   │   └── profileApi.ts # Profile service client
-│   ├── types/            # TypeScript types/interfaces
-│   └── utils/            # Utility functions
+│   │   ├── api.ts         # Axios instance with interceptors
+│   │   ├── dietApi.ts     # Diet service client
+│   │   ├── productApi.ts  # Product service client
+│   │   └── profileApi.ts  # Profile service client
+│   ├── types/             # TypeScript types/interfaces
+│   └── utils/             # Utility functions
 └── config/
-    ├── keycloak.ts       # Keycloak configuration
-    └── constants.ts      # App constants
+    ├── keycloak.ts        # Keycloak configuration
+    └── constants.ts       # App constants
 ```
-Note: No auth/ feature for now - will be added in Phase 2.
-
 
 ## API Client (axios instance):
 ```typescript
@@ -149,7 +148,7 @@ All error responses have common pattern with followed example:
 - **Config Server** - Spring Cloud Config Server
 - **Authorization Server** - KeyCloak (OAuth2/OIDC)
 - **Message Broker** - RabbitMQ
-- **Caching** - Caffeine + Redis
+- **Caching** - Caffeine
 
 ### Microservices
 - **Framework** - Spring Boot 4.0.2
@@ -166,8 +165,7 @@ All error responses have common pattern with followed example:
 
 ### Security
 - **JWT Validation** in API Gateway - gateway validates and forwards token to microservice
-- **JWT Validation** in individual microservices
-- **Role based access** with Spring Security
+- **JWT Validation** in individual microservices - token validation and role based access
 - **Method level security** in individual services
 
 ### Resiliency
@@ -176,10 +174,11 @@ All error responses have common pattern with followed example:
 ## Tasks
 
 ### Current:
-- Products page - display all the products with search filter and categories combo box. List should be pageable with 50 records per page.
-Table should display: name, category, calories, protein, carbs, fat. There should be `Add product` button available only for authenticated users. 
-Clicking on product should redirect to product  (to be done in future task). 
-`Add product` button should redirect to Add product form layout (to be done in future task).
+- [ ] Products page:
+  - table view with products data: name, calories, protein, carbs, fat
+  - pageable (50 products/page)
+  - filterable (product category combo box, product name text field, filter button)
+  
 
 ### Finished:
 
@@ -194,6 +193,8 @@ Clicking on product should redirect to product  (to be done in future task).
 4. **CORS** handled in API Gateway
 5. **Rate limiting** handled in API Gateway
 6. **NEVER** modify /backend
+7. **NEVER** hardcode sensitive data in frontend
+8. gateway API_SPEC.md wll include some frontend requirements
 
 Below section is for reference ONLY - do NOT implement now:
 

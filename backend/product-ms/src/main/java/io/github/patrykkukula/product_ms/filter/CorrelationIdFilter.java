@@ -29,9 +29,11 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
         try {
             String correlationId = request.getHeader(CORRELATION_ID);
+            log.info("correlationId found in request header: {}", correlationId);
 
             if (correlationId == null || correlationId.isBlank()) {
                 correlationId = UUID.randomUUID().toString();
+                log.info("correlationId not found in request header. Generated correlationId: {} ", correlationId);
             }
 
             MDC.put(CORRELATION_ID, correlationId);             // set MDC entry to track logs

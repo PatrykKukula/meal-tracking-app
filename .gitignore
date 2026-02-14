@@ -1,6 +1,7 @@
 backend/product-ms/HELP.md
 target/
 frontend/read/
+node_modules/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
