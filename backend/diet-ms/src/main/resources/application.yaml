@@ -1,45 +1,44 @@
 server:
-  port: 8081
+  port: 8082
 
 spring:
   application:
-    name: product
+    name: diet-ms
   config:
     import: optional:configserver:http://localhost:9021/
   datasource:
-    url: jdbc:postgresql://localhost:5433/productdb
+    url: jdbc:postgresql://localhost:5434/ProducSnapshot
     username: ${DATASOURCE_USERNAME:postgres}
     password: ${DATASOURCE_PASSWORD:postgres}
     drive-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${RESOURCE_SERVER_ISSUER_URI:http://localhost:7080/realms/MealTrackingApp}
-          jwk-set-uri: ${RESOURCE_SERVER_JWK_SET_URI:http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs}
+          issuer-uri: http://localhost:7080/realms/MealTrackingApp
+          jwk-set-uri: http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs
   cloud:
+    function:
+      definition: productCreated; productUpdated; productDeleted
     stream:
       bindings:
-        productCreated-out-0:
+        productCreated-in-0:
           destination: product.created
-        productUpdated-out-0:
+          group: ${spring.application.name}
+        productUpdated-in-0:
           destination: product.updated
-        productDeleted-out-0:
+        productDeleted-in-0:
           destination: product.deleted
 
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 10s
+rabbit:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+  connection-timeout: 10s
 
 eureka:
   instance:
@@ -70,18 +69,6 @@ management:
 
 info:
   app:
-    name: "Product MS"
-    description: "Microservice for Products in Meal Tracking Application"
+    name: "Diet MS"
+    description: "Microservice for Diets in Meal Tracking Application"
     version: 1.0.0
-
-logging:
-  level:
-    io:
-      github:
-        patrykkukula:
-          product-ms: TRACE
-    org:
-      springframework:
-        security: TRACE
-  pattern:
-    console: "%d{HH:mm:ss} [correlation-id:%X{correlation-id}] %-5level %logger - %msg%n"
