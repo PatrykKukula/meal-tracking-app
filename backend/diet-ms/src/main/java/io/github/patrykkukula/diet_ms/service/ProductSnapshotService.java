@@ -1,6 +1,5 @@
 package io.github.patrykkukula.diet_ms.service;
 
-import io.github.patrykkukula.diet_ms.dto.ProductSnapshotDto;
 import io.github.patrykkukula.diet_ms.mapper.ProductSnapshotMapper;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
 import io.github.patrykkukula.diet_ms.repository.ProductSnapshotRepository;
@@ -26,8 +25,8 @@ public class ProductSnapshotService {
     public void updateProductSnapshot(ProductUpdatedEvent event) {
         productSnapshotRepository.findById(event.productId()).ifPresent(
                     snapshot -> {
-                        ProductSnapshotMapper.mapProductDtoToSnapshotUpdate(event, snapshot);
-                        log.info("ProductSnapshot updated: {}", snapshot);
+                        ProductSnapshot updatedSnapshot = ProductSnapshotMapper.mapProductDtoToSnapshotUpdate(event, snapshot);
+                        log.info("ProductSnapshot updated: {}", updatedSnapshot);
                     });
     }
 
