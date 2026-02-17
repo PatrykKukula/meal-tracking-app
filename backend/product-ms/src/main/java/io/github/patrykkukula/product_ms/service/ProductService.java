@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,6 +30,7 @@ import java.util.Objects;
 public class ProductService {
     private final AuthenticationUtils authenticationUtils;
     private final ProductRepository productRepository;
+    private final StreamBridge streamBridge;
     private final int PAGE_SIZE = 50;
     private final int MAX_CUSTOM_PRODUCTS = 100;
 
@@ -45,7 +47,11 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        return ProductMapper.mapProductToProductDto(savedProduct);
+        ProductDto savedDto = ProductMapper.mapProductToProductDto(savedProduct);
+
+        productCreatedEvent(savedDto);
+
+        return savedDto;
     }
 
     /**
@@ -69,7 +75,11 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        return ProductMapper.mapProductToProductDto(savedProduct);
+        ProductDto savedDto = ProductMapper.mapProductToProductDto(savedProduct);
+
+        productCreatedEvent(productDto);
+
+        return savedDto;
     }
 
     @Cacheable(value = "product", unless = "#result.ownerUsername != null")
@@ -132,7 +142,11 @@ public class ProductService {
 
         updatedProduct = ProductMapper.mapProductDtoToProductUpdate(productDto, product);
 
-        return ProductMapper.mapProductToProductDto(updatedProduct);
+        ProductDto savedDto = ProductMapper.mapProductToProductDto(updatedProduct);
+
+        productUpdateEvent(savedDto);
+
+        return savedDto;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -143,11 +157,31 @@ public class ProductService {
         boolean allowed = authenticationUtils.canUserModifyProduct(product);
 
         productRepository.deleteById(productId);
+
+        productDeletedEvent(productId);
     }
 
     private Product fetchProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
+    }
+
+    private void productCreatedEvent(ProductDto productDto) {
+        log.info("Sending ProductCreated Event to product.created Exchange: {}", productDto);
+        boolean result = streamBridge.send("productCreated-out-0", productDto);
+        log.info("ProductCreated Event sent successfully: {}", result);
+    }
+
+    private void productUpdateEvent(ProductDto productDto) {
+        log.info("Sending ProductUpdated Event to product.updated Exchange: {}", productDto);
+        boolean result = streamBridge.send("productUpdated-out-0", productDto);
+        log.info("ProductUpdated Event sent successfully: {}", result);
+    }
+
+    private void productDeletedEvent(Long productId) {
+        log.info("Sending ProductDeleted Event to product.deleted Exchange: {}", productId);
+        boolean result = streamBridge.send("productDeleted-out-0", productId);
+        log.info("ProductDeleted Event sent successfully: {}", result);
     }
 
     // returns true if user has less than 100 custom products added

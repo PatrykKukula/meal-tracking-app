@@ -29,7 +29,6 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
-        httpSecurity.csrf(csrf -> csrf.disable());  // remove when frontend is available
         httpSecurity.exceptionHandling( ehc -> {
             ehc.accessDeniedHandler(new AccessDeniedHandlerImpl());
             ehc.authenticationEntryPoint(new AuthenticationEntryPointImpl());
