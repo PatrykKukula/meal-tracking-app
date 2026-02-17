@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
         <module name="eureka-server" />
+        <module name="mealtrackingapp-common" />
       </profile>
       <profile name="Annotation profile for Product Microservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -19,11 +20,21 @@
         </processorPath>
         <module name="product-ms" />
       </profile>
+      <profile name="Annotation profile for Diet Microservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath>
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="diet-ms" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
+      <module name="diet-ms" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="product-ms" options="-parameters" />
     </option>

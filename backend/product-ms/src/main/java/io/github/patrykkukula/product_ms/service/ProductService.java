@@ -1,5 +1,7 @@
 package io.github.patrykkukula.product_ms.service;
 
+import io.github.patrykkukula.events.ProductCreatedEvent;
+import io.github.patrykkukula.events.ProductUpdatedEvent;
 import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.exception.CustomProductAmountExceededException;
@@ -12,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.PageRequest;
@@ -168,13 +169,37 @@ public class ProductService {
 
     private void productCreatedEvent(ProductDto productDto) {
         log.info("Sending ProductCreated Event to product.created Exchange: {}", productDto);
-        boolean result = streamBridge.send("productCreated-out-0", productDto);
+
+        ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(
+                productDto.getProductId(),
+                productDto.getName(),
+                productDto.getProductCategory().toString(),
+                productDto.getCalories(),
+                productDto.getProtein(),
+                productDto.getCarbs(),
+                productDto.getFat(),
+                productDto.getOwnerUsername()
+        );
+
+        boolean result = streamBridge.send("productCreated-out-0", productCreatedEvent);
         log.info("ProductCreated Event sent successfully: {}", result);
     }
 
     private void productUpdateEvent(ProductDto productDto) {
         log.info("Sending ProductUpdated Event to product.updated Exchange: {}", productDto);
-        boolean result = streamBridge.send("productUpdated-out-0", productDto);
+
+        ProductUpdatedEvent productUpdatedEvent = new ProductUpdatedEvent(
+                productDto.getProductId(),
+                productDto.getName(),
+                productDto.getProductCategory().toString(),
+                productDto.getCalories(),
+                productDto.getProtein(),
+                productDto.getCarbs(),
+                productDto.getFat(),
+                productDto.getOwnerUsername()
+        );
+
+        boolean result = streamBridge.send("productUpdated-out-0", productUpdatedEvent);
         log.info("ProductUpdated Event sent successfully: {}", result);
     }
 

@@ -1,6 +1,6 @@
 package io.github.patrykkukula.product_ms.exception;
 
-import io.github.patrykkukula.product_ms.dto.ErrorResponseDto;
+import io.github.patrykkukula.dto.ErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ErrorResponseDto(
+                new io.github.patrykkukula.dto.ErrorResponseDto(
                         HttpStatus.NOT_FOUND.getReasonPhrase(),
                         HttpStatus.NOT_FOUND.value(), ex.getMessage(),
                         request.getRequestURI(),

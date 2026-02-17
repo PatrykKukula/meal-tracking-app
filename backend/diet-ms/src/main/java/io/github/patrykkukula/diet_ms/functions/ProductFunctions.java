@@ -1,7 +1,9 @@
 package io.github.patrykkukula.diet_ms.functions;
 
-import io.github.patrykkukula.diet_ms.dto.ProductDto;
+import io.github.patrykkukula.diet_ms.dto.ProductSnapshotDto;
 import io.github.patrykkukula.diet_ms.service.ProductSnapshotService;
+import io.github.patrykkukula.events.ProductCreatedEvent;
+import io.github.patrykkukula.events.ProductUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -16,18 +18,18 @@ public class ProductFunctions {
     private final ProductSnapshotService productSnapshotService;
 
     @Bean
-    public Consumer<ProductDto> productCreated() {
-        return productDto -> {
+    public Consumer<ProductCreatedEvent> productCreated() {
+        return event -> {
           log.info("ProductCreated Event received in diet_ms");
-          productSnapshotService.addProductSnapshot(productDto);
+          productSnapshotService.addProductSnapshot(event);
         };
     }
 
     @Bean
-    public Consumer<ProductDto> productUpdated() {
-        return productDto -> {
+    public Consumer<ProductUpdatedEvent> productUpdated() {
+        return event -> {
             log.info("ProductUpdated Event received in diet_ms");
-            productSnapshotService.updateProductSnapshot(productDto);
+            productSnapshotService.updateProductSnapshot(event);
         };
     }
 

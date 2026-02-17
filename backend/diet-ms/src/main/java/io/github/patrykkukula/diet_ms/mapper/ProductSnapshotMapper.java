@@ -1,31 +1,34 @@
 package io.github.patrykkukula.diet_ms.mapper;
 
-import io.github.patrykkukula.diet_ms.dto.ProductDto;
+import io.github.patrykkukula.diet_ms.constants.ProductCategory;
+import io.github.patrykkukula.diet_ms.dto.ProductSnapshotDto;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
+import io.github.patrykkukula.events.ProductCreatedEvent;
+import io.github.patrykkukula.events.ProductUpdatedEvent;
 
 public class ProductSnapshotMapper {
     private ProductSnapshotMapper(){}
 
-    public static ProductSnapshot mapProductDtoToSnapshot(ProductDto productDto) {
+    public static ProductSnapshot mapProductCreatedEventToSnapshot(ProductCreatedEvent productCreatedEvent) {
         return new ProductSnapshot(
-                productDto.productId(),
-                productDto.name(),
-                productDto.productCategory(),
-                productDto.calories(),
-                productDto.protein(),
-                productDto.carbs(),
-                productDto.fat(),
-                productDto.ownerUsername() != null ? productDto.ownerUsername() : null
+                productCreatedEvent.productId(),
+                productCreatedEvent.name(),
+                ProductCategory.valueOf(productCreatedEvent.productCategory()),
+                productCreatedEvent.calories(),
+                productCreatedEvent.protein(),
+                productCreatedEvent.carbs(),
+                productCreatedEvent.fat(),
+                productCreatedEvent.ownerUsername() != null ? productCreatedEvent.ownerUsername() : null
         );
     }
 
-    public static ProductSnapshot mapProductDtoToSnapshotUpdate(ProductDto productDto, ProductSnapshot productSnapshot) {
-        productSnapshot.setName(productDto.name());
-        productSnapshot.setProductCategory(productDto.productCategory());
-        productSnapshot.setCalories(productDto.calories());
-        productSnapshot.setProtein(productDto.protein());
-        productSnapshot.setCarbs(productDto.carbs());
-        productSnapshot.setFat(productDto.fat());
+    public static ProductSnapshot mapProductDtoToSnapshotUpdate(ProductUpdatedEvent event, ProductSnapshot productSnapshot) {
+        productSnapshot.setName(event.name());
+        productSnapshot.setProductCategory(ProductCategory.valueOf(event.productCategory()));
+        productSnapshot.setCalories(event.calories());
+        productSnapshot.setProtein(event.protein());
+        productSnapshot.setCarbs(event.carbs());
+        productSnapshot.setFat(event.fat());
         return productSnapshot;
     }
 }

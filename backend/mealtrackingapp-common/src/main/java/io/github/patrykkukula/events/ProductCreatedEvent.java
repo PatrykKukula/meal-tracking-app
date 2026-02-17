@@ -1,0 +1,11 @@
+package io.github.patrykkukula.events;
+
+public record ProductCreatedEvent(Long productId,
+                                  String name,
+                                  String productCategory,
+                                  Integer calories,
+                                  Integer protein,
+                                  Integer carbs,
+                                  Integer fat,
+                                  String ownerUsername) {
+}

@@ -1,9 +1,11 @@
 package io.github.patrykkukula.diet_ms.service;
 
-import io.github.patrykkukula.diet_ms.dto.ProductDto;
+import io.github.patrykkukula.diet_ms.dto.ProductSnapshotDto;
 import io.github.patrykkukula.diet_ms.mapper.ProductSnapshotMapper;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
 import io.github.patrykkukula.diet_ms.repository.ProductSnapshotRepository;
+import io.github.patrykkukula.events.ProductCreatedEvent;
+import io.github.patrykkukula.events.ProductUpdatedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,16 +17,16 @@ import org.springframework.stereotype.Service;
 public class ProductSnapshotService {
     private final ProductSnapshotRepository productSnapshotRepository;
 
-    public void addProductSnapshot(ProductDto productDto) {
-        ProductSnapshot productSnapshot = productSnapshotRepository.save(ProductSnapshotMapper.mapProductDtoToSnapshot(productDto));
+    public void addProductSnapshot(ProductCreatedEvent event) {
+        ProductSnapshot productSnapshot = productSnapshotRepository.save(ProductSnapshotMapper.mapProductCreatedEventToSnapshot(event));
         log.info("ProductSnapshot created: {}", productSnapshot);
     }
 
     @Transactional
-    public void updateProductSnapshot(ProductDto productDto) {
-        productSnapshotRepository.findById(productDto.productId()).ifPresent(
+    public void updateProductSnapshot(ProductUpdatedEvent event) {
+        productSnapshotRepository.findById(event.productId()).ifPresent(
                     snapshot -> {
-                        ProductSnapshotMapper.mapProductDtoToSnapshotUpdate(productDto, snapshot);
+                        ProductSnapshotMapper.mapProductDtoToSnapshotUpdate(event, snapshot);
                         log.info("ProductSnapshot updated: {}", snapshot);
                     });
     }

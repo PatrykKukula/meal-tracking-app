@@ -2,7 +2,7 @@ package io.github.patrykkukula.product_ms.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import io.github.patrykkukula.product_ms.dto.ErrorResponseDto;
+import io.github.patrykkukula.dto.ErrorResponseDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
