@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: diet-ms
+    name: diet
   config:
     import: optional:configserver:http://localhost:9021/
   datasource:
-    url: jdbc:postgresql://localhost:5434/ProducSnapshot
+    url: jdbc:postgresql://localhost:5434/productsnapshotdb
     username: ${DATASOURCE_USERNAME:postgres}
     password: ${DATASOURCE_PASSWORD:postgres}
     drive-class-name: org.postgresql.Driver
