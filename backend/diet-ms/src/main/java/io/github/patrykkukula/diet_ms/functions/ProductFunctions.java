@@ -1,6 +1,5 @@
 package io.github.patrykkukula.diet_ms.functions;
 
-import io.github.patrykkukula.diet_ms.dto.ProductSnapshotDto;
 import io.github.patrykkukula.diet_ms.service.ProductSnapshotService;
 import io.github.patrykkukula.events.ProductCreatedEvent;
 import io.github.patrykkukula.events.ProductUpdatedEvent;

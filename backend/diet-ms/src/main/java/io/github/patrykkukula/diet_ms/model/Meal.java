@@ -1,10 +1,37 @@
 package io.github.patrykkukula.diet_ms.model;
 
-import jakarta.persistence.Entity;
-import lombok.Getter;
-import lombok.Setter;
+import io.github.patrykkukula.diet_ms.dto.MealDto;
+import jakarta.persistence.*;
+import lombok.*;
 
-//@Entity
-//@Getter @Setter
-//public class Meal {
-//}
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter @Setter
+@NoArgsConstructor
+public class Meal {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long mealId;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "dietDayId")
+    private DietDay dietDay;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meal")
+    private List<ProductQuantity> productQuantities = new ArrayList<>();
+
+    public void addProductQuantity(ProductQuantity productQuantity) {
+        productQuantities.add(productQuantity);
+        productQuantity.setMeal(this);
+    }
+
+    public static Meal fromDto(MealDto dto) {
+        Meal meal = new Meal();
+        meal.setName(dto.getName());
+        return meal;
+    }
+}

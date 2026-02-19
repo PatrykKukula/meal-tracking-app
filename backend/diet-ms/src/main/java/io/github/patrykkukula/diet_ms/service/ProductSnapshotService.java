@@ -17,7 +17,7 @@ public class ProductSnapshotService {
     private final ProductSnapshotRepository productSnapshotRepository;
 
     public void addProductSnapshot(ProductCreatedEvent event) {
-        ProductSnapshot productSnapshot = productSnapshotRepository.save(ProductSnapshotMapper.mapProductCreatedEventToSnapshot(event));
+        ProductSnapshot productSnapshot = productSnapshotRepository.save(ProductSnapshot.fromEvent(event));
         log.info("ProductSnapshot created: {}", productSnapshot);
     }
 

@@ -1,15 +1,19 @@
 package io.github.patrykkukula.diet_ms.model;
 
 import io.github.patrykkukula.diet_ms.constants.ProductCategory;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.*;
+import io.github.patrykkukula.events.ProductCreatedEvent;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class ProductSnapshot {
     @Id
@@ -35,4 +39,19 @@ public class ProductSnapshot {
 
     private String ownerUsername;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSnapshot")
+    private List<ProductQuantity> productQuantities = new ArrayList<>();
+
+    public static ProductSnapshot fromEvent(ProductCreatedEvent event) {
+        ProductSnapshot productSnapshot = new ProductSnapshot();
+        productSnapshot.setProductId(event.productId());
+        productSnapshot.setName(event.name());
+        productSnapshot.setProductCategory(ProductCategory.valueOf(event.productCategory()));
+        productSnapshot.setCalories(event.calories());
+        productSnapshot.setProtein(event.protein());
+        productSnapshot.setCarbs(event.carbs());
+        productSnapshot.setFat(event.fat());
+        productSnapshot.setOwnerUsername(event.ownerUsername() != null ? event.ownerUsername() : null);
+        return productSnapshot;
+    }
 }
