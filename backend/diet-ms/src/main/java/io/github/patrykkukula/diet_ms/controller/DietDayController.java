@@ -2,7 +2,7 @@ package io.github.patrykkukula.diet_ms.controller;
 
 import io.github.patrykkukula.diet_ms.dto.DietDayDto;
 import io.github.patrykkukula.diet_ms.service.DietDayService;
-import io.github.patrykkukula.utils.ControllerUtils;
+import io.github.patrykkukula.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -22,6 +22,6 @@ public class DietDayController {
     public ResponseEntity<DietDayDto> createDietDay(@RequestBody DietDayDto dietDayDto, HttpServletRequest request) {
         DietDayDto dietDay = dietDayService.createDietDay(dietDayDto);
 
-        return ResponseEntity.created(ControllerUtils.setLocation(dietDay.getDietDatId(), request)).body(dietDayDto);
+        return ResponseEntity.created(BasicUtils.setLocation(dietDay.getDietDatId(), request)).body(dietDayDto);
     }
 }

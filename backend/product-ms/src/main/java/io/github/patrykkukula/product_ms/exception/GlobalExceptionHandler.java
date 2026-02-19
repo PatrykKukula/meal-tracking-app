@@ -1,6 +1,7 @@
 package io.github.patrykkukula.product_ms.exception;
 
 import io.github.patrykkukula.dto.ErrorResponseDto;
+import io.github.patrykkukula.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -15,6 +16,8 @@ import org.springframework.web.context.request.WebRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
+
+import static io.github.patrykkukula.utils.BasicUtils.setOccurrenceTime;
 
 @RestControllerAdvice
 @Slf4j
@@ -171,10 +174,5 @@ public class GlobalExceptionHandler {
                         setOccurrenceTime()
                 )
         );
-    }
-
-    // Set current time in ISO local date time
-    private String setOccurrenceTime() {
-        return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }

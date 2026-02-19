@@ -3,7 +3,7 @@ package io.github.patrykkukula.product_ms.controller;
 import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.service.ProductService;
-import io.github.patrykkukula.utils.ControllerUtils;
+import io.github.patrykkukula.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -13,8 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import java.net.URI;
+
 import java.util.List;
 
 @Slf4j
@@ -30,14 +29,14 @@ public class ProductController {
         log.info("Request coming: {} ms", System.currentTimeMillis());
         ProductDto addedProduct = productService.addProduct(productDto);
 
-        return ResponseEntity.created(ControllerUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
+        return ResponseEntity.created(BasicUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
     }
 
     @PostMapping("/custom")
     public ResponseEntity<ProductDto> addCustomProduct(@Valid @RequestBody ProductDto productDto, HttpServletRequest request) {
         ProductDto addedProduct = productService.addCustomProduct(productDto);
 
-        return ResponseEntity.created(ControllerUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
+        return ResponseEntity.created(BasicUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
     }
 
     @GetMapping("/{productId}")
