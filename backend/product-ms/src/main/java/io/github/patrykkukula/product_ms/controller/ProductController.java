@@ -3,6 +3,7 @@ package io.github.patrykkukula.product_ms.controller;
 import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.service.ProductService;
+import io.github.patrykkukula.utils.ControllerUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -29,14 +30,14 @@ public class ProductController {
         log.info("Request coming: {} ms", System.currentTimeMillis());
         ProductDto addedProduct = productService.addProduct(productDto);
 
-        return ResponseEntity.created(setLocation(addedProduct.getProductId(), request)).body(addedProduct);
+        return ResponseEntity.created(ControllerUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
     }
 
     @PostMapping("/custom")
     public ResponseEntity<ProductDto> addCustomProduct(@Valid @RequestBody ProductDto productDto, HttpServletRequest request) {
         ProductDto addedProduct = productService.addCustomProduct(productDto);
 
-        return ResponseEntity.created(setLocation(addedProduct.getProductId(), request)).body(addedProduct);
+        return ResponseEntity.created(ControllerUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
     }
 
     @GetMapping("/{productId}")
@@ -66,13 +67,5 @@ public class ProductController {
         productService.deleteProduct(productId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    // set created resource URI
-    private URI setLocation(Long id, HttpServletRequest request) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/products" + "/{id}")
-                .buildAndExpand(id)
-                .toUri();
     }
 }
