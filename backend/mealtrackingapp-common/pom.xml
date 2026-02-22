@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>io.github.patrykkukula</groupId>
 	<artifactId>mealtrackingapp-common</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>MealTrackingApp common</name>
-	<description>Common library for MealTrackingAp</description>
+	<description>Common library for MealTrackingApp</description>
 	<url/>
 	<licenses>
 		<license/>

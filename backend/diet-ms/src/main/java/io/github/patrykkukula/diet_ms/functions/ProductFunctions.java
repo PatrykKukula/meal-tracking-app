@@ -1,8 +1,8 @@
 package io.github.patrykkukula.diet_ms.functions;
 
 import io.github.patrykkukula.diet_ms.service.ProductSnapshotService;
-import io.github.patrykkukula.events.ProductCreatedEvent;
-import io.github.patrykkukula.events.ProductUpdatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.ProductCreatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.ProductUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

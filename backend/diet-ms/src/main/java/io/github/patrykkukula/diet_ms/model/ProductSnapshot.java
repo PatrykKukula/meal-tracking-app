@@ -1,7 +1,7 @@
 package io.github.patrykkukula.diet_ms.model;
 
 import io.github.patrykkukula.diet_ms.constants.ProductCategory;
-import io.github.patrykkukula.events.ProductCreatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.ProductCreatedEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

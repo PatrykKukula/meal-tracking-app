@@ -135,6 +135,18 @@
 			<artifactId>mealtrackingapp-common</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>io.github.patrykkukula</groupId>
+			<artifactId>mealtrackingapp-common</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.patrykkukula</groupId>
+			<artifactId>mealtrackingapp-common</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

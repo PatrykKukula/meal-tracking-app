@@ -4,7 +4,7 @@ import io.github.patrykkukula.diet_ms.constants.ProductCategory;
 import io.github.patrykkukula.diet_ms.dto.ProductDtoRead;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
-import io.github.patrykkukula.events.ProductUpdatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.ProductUpdatedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
