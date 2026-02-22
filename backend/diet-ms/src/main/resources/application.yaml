@@ -14,12 +14,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:7080/realms/MealTrackingApp
-          jwk-set-uri: http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs
+          issuer-uri: ${RESOURCE_SERVER_ISSUER_URI:http://localhost:7080/realms/MealTrackingApp}
+          jwk-set-uri: ${RESOURCE_SERVER_JWK_SET_URI:http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs}
   cloud:
     function:
       definition: productCreated; productUpdated; productDeleted
@@ -72,3 +76,15 @@ info:
     name: "Diet MS"
     description: "Microservice for Diets in Meal Tracking Application"
     version: 1.0.0
+
+logging:
+  level:
+    io:
+      github:
+        patrykkukula:
+          diet-ms: TRACE
+    org:
+      springframework:
+        security: TRACE
+  pattern:
+    console: "%d{HH:mm:ss} [correlation-id:%X{correlation-id}] %-5level %logger - %msg%n"
