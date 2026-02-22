@@ -3,7 +3,7 @@ package io.github.patrykkukula.diet_ms.controller;
 import io.github.patrykkukula.diet_ms.dto.DietDayDto;
 import io.github.patrykkukula.diet_ms.dto.DietDayDtoRead;
 import io.github.patrykkukula.diet_ms.service.DietDayService;
-import io.github.patrykkukula.utils.BasicUtils;
+ import io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;

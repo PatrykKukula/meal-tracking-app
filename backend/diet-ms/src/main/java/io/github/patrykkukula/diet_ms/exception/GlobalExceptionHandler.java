@@ -1,6 +1,6 @@
 package io.github.patrykkukula.diet_ms.exception;
 
-import io.github.patrykkukula.dto.ErrorResponseDto;
+import io.github.patrykkukula.mealtrackingapp_common.dto.ErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import java.util.stream.Collectors;
 
-import static io.github.patrykkukula.utils.BasicUtils.setOccurrenceTime;
+import static io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils.setOccurrenceTime;
+
 
 @RestControllerAdvice
 @Slf4j
