@@ -1,4 +1,4 @@
-package io.github.patrykkukula.product_ms.security;
+package io.github.patrykkukula.mealtrackingapp_common.security;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

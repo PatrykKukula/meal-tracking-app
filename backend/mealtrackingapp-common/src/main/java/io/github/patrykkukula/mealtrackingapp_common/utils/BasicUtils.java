@@ -1,4 +1,4 @@
-package io.github.patrykkukula.utils;
+package io.github.patrykkukula.mealtrackingapp_common.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

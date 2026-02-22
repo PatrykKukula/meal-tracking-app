@@ -1,4 +1,4 @@
-package io.github.patrykkukula.product_ms.security;
+package io.github.patrykkukula.mealtrackingapp_common.security;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.context.ActiveProfiles;
-
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 public class KeycloakRealmRolesConverterTest {
     @Autowired
-    private KeycloakRealmRolesConverter keycloakRealmRolesConverter;
+    private io.github.patrykkukula.mealtrackingapp_common.security.KeycloakRealmRolesConverter keycloakRealmRolesConverter;
     private Jwt jwt;
 
     @Test

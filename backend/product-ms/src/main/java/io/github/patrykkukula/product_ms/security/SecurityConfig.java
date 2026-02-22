@@ -1,7 +1,9 @@
 package io.github.patrykkukula.product_ms.security;
 
+import io.github.patrykkukula.mealtrackingapp_common.security.KeycloakRealmRolesConverter;
 import io.github.patrykkukula.product_ms.exception.AccessDeniedHandlerImpl;
 import io.github.patrykkukula.product_ms.exception.AuthenticationEntryPointImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +13,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final String ROLE_ADMIN = "ADMIN";
+    private final KeycloakRealmRolesConverter keycloakRealmRolesConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -40,7 +45,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRealmRolesConverter());
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(keycloakRealmRolesConverter);
 
         return jwtAuthenticationConverter;
     }

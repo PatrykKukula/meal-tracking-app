@@ -1,6 +1,6 @@
-package io.github.patrykkukula.events;
+package io.github.patrykkukula.mealtrackingapp_common.events;
 
-public record ProductCreatedEvent(Long productId,
+public record ProductUpdatedEvent(Long productId,
                                   String name,
                                   String productCategory,
                                   Integer calories,
