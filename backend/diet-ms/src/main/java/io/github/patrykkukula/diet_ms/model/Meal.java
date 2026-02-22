@@ -18,8 +18,11 @@ public class Meal {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "dietDayId")
+    @JoinColumn(name = "diet_day_id")
     private DietDay dietDay;
+
+    @Column(nullable = false)
+    private Long orderIndex;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meal")
     private List<ProductQuantity> productQuantities = new ArrayList<>();

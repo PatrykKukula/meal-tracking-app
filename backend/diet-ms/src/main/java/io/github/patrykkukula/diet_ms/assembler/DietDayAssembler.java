@@ -41,6 +41,8 @@ public class DietDayAssembler {
 
         Meal meal = Meal.fromDto(mealDto);
 
+        meal.setOrderIndex((long) dietDay.getMeals().size());
+
         mealDto.getQuantities()
                 .forEach(qty -> addProductQuantityToMeal(qty, meal));
 

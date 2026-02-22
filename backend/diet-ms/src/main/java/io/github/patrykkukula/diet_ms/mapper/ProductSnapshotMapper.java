@@ -1,6 +1,8 @@
 package io.github.patrykkukula.diet_ms.mapper;
 
 import io.github.patrykkukula.diet_ms.constants.ProductCategory;
+import io.github.patrykkukula.diet_ms.dto.ProductDtoRead;
+import io.github.patrykkukula.diet_ms.model.ProductQuantity;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
 import io.github.patrykkukula.events.ProductUpdatedEvent;
 
@@ -15,5 +17,19 @@ public class ProductSnapshotMapper {
         productSnapshot.setCarbs(event.carbs());
         productSnapshot.setFat(event.fat());
         return productSnapshot;
+    }
+
+    public static ProductDtoRead mapProductSnapshotToProductRead(ProductSnapshot snapshot, ProductQuantity quantity) {
+        return new ProductDtoRead(
+                snapshot.getProductId(),
+                quantity.getProductQuantityId(),
+                quantity.getQuantity(),
+                snapshot.getName(),
+                snapshot.getProductCategory(),
+                snapshot.getCalories(),
+                snapshot.getProtein(),
+                snapshot.getCarbs(),
+                snapshot.getFat()
+        );
     }
 }

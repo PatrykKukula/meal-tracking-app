@@ -22,6 +22,7 @@ public class ProductSnapshot {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private ProductCategory productCategory;
 

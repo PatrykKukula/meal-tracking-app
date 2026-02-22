@@ -6,7 +6,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -20,7 +22,8 @@ public class DietDay {
     private LocalDate date;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "dietDay")
-    private List<Meal> meals = new ArrayList<>();
+    @OrderBy(value = "orderIndex ASC")
+    private Set<Meal> meals = new HashSet<>();
 
     @Column(nullable = false, length = 64)
     private String ownerUsername;

@@ -1,7 +1,6 @@
 package io.github.patrykkukula.diet_ms.exception;
 
 import io.github.patrykkukula.dto.ErrorResponseDto;
-import io.github.patrykkukula.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,9 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 import static io.github.patrykkukula.utils.BasicUtils.setOccurrenceTime;
@@ -22,9 +18,27 @@ import static io.github.patrykkukula.utils.BasicUtils.setOccurrenceTime;
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> handleProductSnapshotNotFoundException(ProductSnapshotNotFoundException ex, HttpServletRequest request) {
+        log.warn(
+                "ProductSnapshotNotFoundException occurred in Diet MS. path={}",
+                request.getRequestURI(),
+                ex
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErrorResponseDto(
+                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
+                        request.getRequestURI(),
+                        setOccurrenceTime()
+                )
+        );
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
         log.warn(
-                "AccessDeniedException occurred in Product MS after SecurityFilterChain. path={}",
+                "AccessDeniedException occurred in Diet MS after SecurityFilterChain. path={}",
                 request.getRequestURI(),
                 ex
         );
@@ -42,7 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest webRequest) {
         log.warn(
-                "MethodArgumentNotValidException occurred in Product MS. path={}",
+                "MethodArgumentNotValidException occurred in Diet MS. path={}",
                 webRequest.getDescription(false),
                 ex
         );

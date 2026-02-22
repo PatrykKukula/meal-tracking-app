@@ -17,17 +17,4 @@ public class DietDayMapper {
 
         return dietDayDto;
     }
-
-
-//    public static DietDay mapDietDayDtoDoDietDay(DietDayDto dietDayDto, String ownerUsername) {
-//        DietDay dietDay = new DietDay();
-//        dietDay.setDate(dietDayDto.getDate());
-//        dietDay.setMeals(dietDayDto.getMeals()
-//                .stream()
-//                .map(MealMapper::mapMealDtoToMeal)
-//                .toList());
-//        dietDay.setOwnerUsername(ownerUsername);
-//        return dietDay;
-//    }
-//
 }
