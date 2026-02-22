@@ -55,3 +55,6 @@ export interface User {
   email?: string;
   roles: string[];
 }
+
+// Export diet types
+export * from './diet';

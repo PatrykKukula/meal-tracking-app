@@ -44,6 +44,9 @@ export const Navigation: React.FC = () => {
             <Link to={APP_ROUTES.PRODUCTS} className={navLinkClass(APP_ROUTES.PRODUCTS)}>
               Products
             </Link>
+            <Link to="/diets" className={navLinkClass('/diets')}>
+              Diets
+            </Link>
 
             {/* Auth Button */}
             {isAuthenticated ? (

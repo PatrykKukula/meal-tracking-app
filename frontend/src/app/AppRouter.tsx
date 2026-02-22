@@ -6,6 +6,8 @@ import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { ProductsPage } from '@/features/products/ProductsPage';
 import { AddProductPage } from '@/features/products/AddProductPage';
 import { EditProductPage } from '@/features/products/EditProductPage';
+import { DietsPage } from '@/features/diet/DietsPage';
+import { AddDietDayPage } from '@/features/diet/AddDietDayPage';
 import { LoginPage } from '@/features/auth/LoginPage';
 import { APP_ROUTES } from '@/config/constants';
 
@@ -19,6 +21,8 @@ export const AppRouter: React.FC = () => {
           <Route path={APP_ROUTES.PRODUCTS} element={<ProductsPage />} />
           <Route path={APP_ROUTES.PRODUCT_ADD} element={<AddProductPage />} />
           <Route path={APP_ROUTES.PRODUCT_EDIT} element={<EditProductPage />} />
+          <Route path="/diets" element={<DietsPage />} />
+          <Route path="/diets/add" element={<AddDietDayPage />} />
           <Route path={APP_ROUTES.LOGIN} element={<LoginPage />} />
           <Route path="*" element={<Navigate to={APP_ROUTES.HOME} replace />} />
         </Routes>

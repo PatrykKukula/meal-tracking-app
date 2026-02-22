@@ -42,8 +42,6 @@ export const App: React.FC = () => {
           onLoad: 'check-sso',
           checkLoginIframe: false,
           pkceMethod: 'S256',
-          // Enable silent SSO check for better UX
-          silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
         });
 
         isKeycloakInitialized = true;
