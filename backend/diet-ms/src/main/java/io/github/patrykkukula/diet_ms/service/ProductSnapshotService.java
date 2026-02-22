@@ -25,7 +25,7 @@ public class ProductSnapshotService {
         return meal.getProductQuantities()
                 .stream()
                 .map(quantity -> {
-                    return ProductSnapshotMapper.mapProductSnapshotToProductRead(quantity.getProductSnapshot(), quantity);
+                    return ProductSnapshotMapper.mapProductSnapshotToProductDtoRead(quantity.getProductSnapshot(), quantity);
                 }).toList();
     }
 
@@ -38,7 +38,7 @@ public class ProductSnapshotService {
     public void updateProductSnapshot(ProductUpdatedEvent event) {
         ProductSnapshot snapshot = findById(event.productId());
 
-        ProductSnapshot updatedSnapshot = ProductSnapshotMapper.mapProductDtoToSnapshotUpdate(event, snapshot);
+        ProductSnapshot updatedSnapshot = ProductSnapshotMapper.mapProductUpdatedEventToSnapshotUpdate(event, snapshot);
 
         log.info("ProductSnapshot updated: {}", updatedSnapshot);
     }

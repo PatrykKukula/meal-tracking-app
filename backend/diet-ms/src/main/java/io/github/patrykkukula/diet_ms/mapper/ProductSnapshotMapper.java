@@ -9,7 +9,7 @@ import io.github.patrykkukula.events.ProductUpdatedEvent;
 public class ProductSnapshotMapper {
     private ProductSnapshotMapper(){}
 
-    public static ProductSnapshot mapProductDtoToSnapshotUpdate(ProductUpdatedEvent event, ProductSnapshot productSnapshot) {
+    public static ProductSnapshot mapProductUpdatedEventToSnapshotUpdate(ProductUpdatedEvent event, ProductSnapshot productSnapshot) {
         productSnapshot.setName(event.name());
         productSnapshot.setProductCategory(ProductCategory.valueOf(event.productCategory()));
         productSnapshot.setCalories(event.calories());
@@ -19,7 +19,7 @@ public class ProductSnapshotMapper {
         return productSnapshot;
     }
 
-    public static ProductDtoRead mapProductSnapshotToProductRead(ProductSnapshot snapshot, ProductQuantity quantity) {
+    public static ProductDtoRead mapProductSnapshotToProductDtoRead(ProductSnapshot snapshot, ProductQuantity quantity) {
         return new ProductDtoRead(
                 snapshot.getProductId(),
                 quantity.getProductQuantityId(),
