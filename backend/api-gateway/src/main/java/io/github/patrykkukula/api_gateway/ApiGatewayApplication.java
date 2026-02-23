@@ -38,6 +38,16 @@ public class ApiGatewayApplication {
                                 .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver()))
                                 .addResponseHeader("X-Response-Time", formatResponseTime()))
                         .uri("lb://PRODUCT"))
+                .route(spec -> spec.path("/diet/**")
+                        .filters(fn -> fn.rewritePath("/diet/?(?<remaining>.*)", "/${remaining}")
+                                .circuitBreaker(
+                                        cb -> cb.setName("default-cb").setFallbackUri("forward:/api/fallback"))
+                                .retry(retryConfig -> retryConfig.setRetries(3)
+                                        .setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true)
+                                        .setMethods(HttpMethod.GET))
+                                .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver()))
+                                .addResponseHeader("X-Response-Time", formatResponseTime()))
+                        .uri("lb://DIET"))
                 .build();
     }
 
