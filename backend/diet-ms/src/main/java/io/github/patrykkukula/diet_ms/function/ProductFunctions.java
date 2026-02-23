@@ -1,4 +1,4 @@
-package io.github.patrykkukula.diet_ms.functions;
+package io.github.patrykkukula.diet_ms.function;
 
 import io.github.patrykkukula.diet_ms.service.ProductSnapshotService;
 import io.github.patrykkukula.mealtrackingapp_common.events.ProductCreatedEvent;

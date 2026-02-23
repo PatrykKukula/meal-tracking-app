@@ -23,7 +23,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
 
-        // Add CORS when frontend is available
         httpSecurity.sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityContext(scc -> scc.requireExplicitSave(false))
                 .authorizeHttpRequests(authorize -> authorize.

@@ -31,4 +31,11 @@ public class DietDayController {
     public ResponseEntity<DietDayDtoRead> getDietDayById(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id) {
         return ResponseEntity.ok(dietDayService.getDietDayById(id));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeDietDay(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id) {
+        dietDayService.removeDietDay(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

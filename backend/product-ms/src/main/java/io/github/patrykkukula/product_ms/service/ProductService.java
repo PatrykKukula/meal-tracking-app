@@ -1,7 +1,7 @@
 package io.github.patrykkukula.product_ms.service;
 
-import io.github.patrykkukula.events.ProductCreatedEvent;
-import io.github.patrykkukula.events.ProductUpdatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.ProductCreatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.ProductUpdatedEvent;
 import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.exception.CustomProductAmountExceededException;

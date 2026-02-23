@@ -1,7 +1,6 @@
 package io.github.patrykkukula.product_ms.exception;
 
-import io.github.patrykkukula.dto.ErrorResponseDto;
-import io.github.patrykkukula.utils.BasicUtils;
+import io.github.patrykkukula.mealtrackingapp_common.dto.ErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -13,11 +12,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
-import static io.github.patrykkukula.utils.BasicUtils.setOccurrenceTime;
+import static io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils.setOccurrenceTime;
 
 @RestControllerAdvice
 @Slf4j
@@ -32,7 +29,7 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new io.github.patrykkukula.dto.ErrorResponseDto(
+                new ErrorResponseDto(
                         HttpStatus.NOT_FOUND.getReasonPhrase(),
                         HttpStatus.NOT_FOUND.value(), ex.getMessage(),
                         request.getRequestURI(),

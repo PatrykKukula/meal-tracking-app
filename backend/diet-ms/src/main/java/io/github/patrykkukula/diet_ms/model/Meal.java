@@ -1,6 +1,7 @@
 package io.github.patrykkukula.diet_ms.model;
 
 import io.github.patrykkukula.diet_ms.dto.MealDto;
+import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,10 @@ public class Meal {
     public void addProductQuantity(ProductQuantity productQuantity) {
         productQuantities.add(productQuantity);
         productQuantity.setMeal(this);
+    }
+
+    public void removeProductQuantity(ProductQuantity productQuantity) {
+        productQuantities.remove(productQuantity);
     }
 
     public static Meal fromDto(MealDto dto) {

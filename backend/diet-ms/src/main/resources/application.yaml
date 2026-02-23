@@ -7,7 +7,7 @@ spring:
   config:
     import: optional:configserver:http://localhost:9021/
   datasource:
-    url: jdbc:postgresql://localhost:5434/productsnapshotdb
+    url: jdbc:postgresql://localhost:5434/diet-ddb
     username: ${DATASOURCE_USERNAME:postgres}
     password: ${DATASOURCE_PASSWORD:postgres}
     drive-class-name: org.postgresql.Driver

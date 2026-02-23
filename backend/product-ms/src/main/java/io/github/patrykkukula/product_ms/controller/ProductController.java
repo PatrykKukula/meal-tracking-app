@@ -3,7 +3,7 @@ package io.github.patrykkukula.product_ms.controller;
 import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.service.ProductService;
-import io.github.patrykkukula.utils.BasicUtils;
+import io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

@@ -21,7 +21,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) {
 
-        httpSecurity.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/diets").authenticated())
+        httpSecurity.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/diets/**").authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

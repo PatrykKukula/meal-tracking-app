@@ -33,6 +33,10 @@ public class DietDay {
         meal.setDietDay(this);
     }
 
+    public void removeMeal(Meal meal) {
+        meals.remove(meal);
+    }
+
     public static DietDay fromDto(DietDayDto dto) {
         DietDay dietDay = new DietDay();
         dietDay.setDate(dto.getDate());
