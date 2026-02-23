@@ -1,9 +1,8 @@
 package io.github.patrykkukula.product_ms.security;
 
+import io.github.patrykkukula.mealtrackingapp_common.exception.AccessDeniedHandlerImpl;
+import io.github.patrykkukula.mealtrackingapp_common.exception.AuthenticationEntryPointImpl;
 import io.github.patrykkukula.mealtrackingapp_common.security.KeycloakRealmRolesConverter;
-import io.github.patrykkukula.product_ms.exception.AccessDeniedHandlerImpl;
-import io.github.patrykkukula.product_ms.exception.AuthenticationEntryPointImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,7 +10,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 
 @Configuration
@@ -33,8 +34,8 @@ public class SecurityConfig {
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         httpSecurity.exceptionHandling( ehc -> {
-            ehc.accessDeniedHandler(new AccessDeniedHandlerImpl());
-            ehc.authenticationEntryPoint(new AuthenticationEntryPointImpl());
+            ehc.accessDeniedHandler(accessDeniedHandler());
+            ehc.authenticationEntryPoint(authenticationEntryPoint());
         });
 
         return httpSecurity.build();
@@ -51,5 +52,15 @@ public class SecurityConfig {
     @Bean
     public KeycloakRealmRolesConverter keycloakRealmRolesConverter(){
         return new KeycloakRealmRolesConverter();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new AccessDeniedHandlerImpl();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new AuthenticationEntryPointImpl();
     }
 }

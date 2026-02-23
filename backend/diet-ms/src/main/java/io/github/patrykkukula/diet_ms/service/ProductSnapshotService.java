@@ -29,6 +29,7 @@ public class ProductSnapshotService {
                 }).toList();
     }
 
+    @Transactional
     public void addProductSnapshot(ProductCreatedEvent event) {
         ProductSnapshot productSnapshot = productSnapshotRepository.save(ProductSnapshot.fromEvent(event));
         log.info("ProductSnapshot created: {}", productSnapshot);
@@ -43,6 +44,7 @@ public class ProductSnapshotService {
         log.info("ProductSnapshot updated: {}", updatedSnapshot);
     }
 
+    @Transactional
     public void deleteProductSnapshot(Long productId) {
         productSnapshotRepository.deleteById(productId);
         log.info("ProductSnapshot deleted with ID: {}", productId);
@@ -51,5 +53,4 @@ public class ProductSnapshotService {
     private ProductSnapshot findById(Long id) {
         return productSnapshotRepository.findById(id).orElseThrow(() -> new ProductSnapshotNotFoundException(id));
     }
-
 }
