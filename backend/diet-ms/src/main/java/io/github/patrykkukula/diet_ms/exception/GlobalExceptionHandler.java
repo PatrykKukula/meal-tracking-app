@@ -55,6 +55,42 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> handleDietDayNotFoundException(DietDayNotFoundException ex, HttpServletRequest request) {
+        log.warn(
+                "DietDayNotFoundException occurred in Diet MS. path={}",
+                request.getRequestURI(),
+                ex
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ErrorResponseDto(
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        HttpStatus.NOT_FOUND.value(), ex.getMessage(),
+                        request.getRequestURI(),
+                        setOccurrenceTime()
+                )
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> handleProductQuantityNotFoundException(ProductQuantityNotFoundException ex, HttpServletRequest request) {
+        log.warn(
+                "ProductQuantityNotFoundException occurred in Diet MS. path={}",
+                request.getRequestURI(),
+                ex
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ErrorResponseDto(
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        HttpStatus.NOT_FOUND.value(), ex.getMessage(),
+                        request.getRequestURI(),
+                        setOccurrenceTime()
+                )
+        );
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
         log.warn(
                 "AccessDeniedException occurred in Diet MS after SecurityFilterChain. path={}",
