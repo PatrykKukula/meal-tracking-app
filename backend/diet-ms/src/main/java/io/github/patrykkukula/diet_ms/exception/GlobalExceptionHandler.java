@@ -26,10 +26,28 @@ public class GlobalExceptionHandler {
                 ex
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ErrorResponseDto(
-                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                        HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        HttpStatus.NOT_FOUND.value(), ex.getMessage(),
+                        request.getRequestURI(),
+                        setOccurrenceTime()
+                )
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> handleMealNotFoundException(MealNotFoundException ex, HttpServletRequest request) {
+        log.warn(
+                "MealNotFoundException occurred in Diet MS. path={}",
+                request.getRequestURI(),
+                ex
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ErrorResponseDto(
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        HttpStatus.NOT_FOUND.value(), ex.getMessage(),
                         request.getRequestURI(),
                         setOccurrenceTime()
                 )
