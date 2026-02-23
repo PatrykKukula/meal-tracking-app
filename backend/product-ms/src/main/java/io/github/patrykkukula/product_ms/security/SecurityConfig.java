@@ -16,10 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
     private final String ROLE_ADMIN = "ADMIN";
-    private final KeycloakRealmRolesConverter keycloakRealmRolesConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -45,8 +43,13 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(keycloakRealmRolesConverter);
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(keycloakRealmRolesConverter());
 
         return jwtAuthenticationConverter;
+    }
+
+    @Bean
+    public KeycloakRealmRolesConverter keycloakRealmRolesConverter(){
+        return new KeycloakRealmRolesConverter();
     }
 }
