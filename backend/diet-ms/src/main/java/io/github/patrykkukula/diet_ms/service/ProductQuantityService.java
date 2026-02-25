@@ -1,6 +1,7 @@
 package io.github.patrykkukula.diet_ms.service;
 
 import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
+import io.github.patrykkukula.diet_ms.dto.ProductQuantityDtoUpdate;
 import io.github.patrykkukula.diet_ms.exception.ProductQuantityNotFoundException;
 import io.github.patrykkukula.diet_ms.mapper.ProductQuantityMapper;
 import io.github.patrykkukula.diet_ms.model.Meal;
@@ -32,12 +33,12 @@ public class ProductQuantityService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ProductQuantityDto updateProductQuantity(Long quantityId, ProductQuantityDto productQuantityDto) {
+    public ProductQuantityDto updateProductQuantity(Long quantityId, ProductQuantityDtoUpdate productQuantityDto) {
         ProductQuantity productQuantity = fetchProductQuantity(quantityId);
 
         isResourceOwner(productQuantity);
 
-        productQuantity.setQuantity(productQuantity.getQuantity());
+        productQuantity.setQuantity(productQuantityDto.getQuantity());
 
         return ProductQuantityMapper.mapProductQuantityToProductQuantityDto(productQuantity);
     }

@@ -1,5 +1,7 @@
 package io.github.patrykkukula.diet_ms.service;
 
+import io.github.patrykkukula.diet_ms.assembler.DietDayAssembler;
+import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
 import io.github.patrykkukula.diet_ms.exception.MealNotFoundException;
 import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.Meal;
@@ -16,16 +18,31 @@ import org.springframework.stereotype.Service;
 public class MealService {
     private final MealRepository mealRepository;
     private final AuthenticationUtils authenticationUtils;
+    private final DietDayAssembler dietDayAssembler;
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public void removeMeal(Long mealId) {
-        Meal meal = mealRepository.findById(mealId).orElseThrow(() -> new MealNotFoundException(mealId));
+        Meal meal = fetchMeal(mealId);
 
         isResourceOwner(meal);
 
         DietDay dietDay = meal.getDietDay();
         dietDay.removeMeal(meal);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ProductQuantityDto addProductQuantityToMeal(Long mealId, ProductQuantityDto productQuantityDto) {
+        Meal meal = fetchMeal(mealId);
+
+        isResourceOwner(meal);
+
+        return dietDayAssembler.addProductQuantityToMeal(productQuantityDto, meal);
+    }
+
+    private Meal fetchMeal(Long mealId) {
+        return mealRepository.findById(mealId).orElseThrow(() -> new MealNotFoundException(mealId));
     }
 
     // check if Meal belongs to user

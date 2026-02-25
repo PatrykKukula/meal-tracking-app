@@ -2,6 +2,7 @@ package io.github.patrykkukula.diet_ms.service;
 
 import io.github.patrykkukula.diet_ms.assembler.DietDayAssembler;
 import io.github.patrykkukula.diet_ms.dto.*;
+import io.github.patrykkukula.diet_ms.exception.DietDayNotFoundException;
 import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.repository.DietDayRepository;
 import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
@@ -28,26 +29,36 @@ public class DietDayService {
 
         DietDay savedDiet = dietDayRepository.save(dietDay);
 
-        return new DietDayDtoRead(savedDiet.getDietDayId(), dietDay.getOwnerUsername(), setProductsForMeal(dietDay));
+        return new DietDayDtoRead(savedDiet.getDietDayId(), savedDiet.getOwnerUsername(), setProductsForMeal(dietDay));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public DietDayDtoRead getDietDayById(Long dietDayId) {
-        DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId);
+        DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
         isResourceOwner(dietDay);
 
-        return new DietDayDtoRead(dietDayId, dietDay.getOwnerUsername(), setProductsForMeal(dietDay));
+        return new DietDayDtoRead(dietDay.getDietDayId(), dietDay.getOwnerUsername(), setProductsForMeal(dietDay));
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public void removeDietDay(Long dietDayId) {
-        DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId);
+        DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
         isResourceOwner(dietDay);
 
         dietDayRepository.delete(dietDay);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public MealDto addMealToDietDay(Long dietDayId, MealDto mealDto) {
+        DietDay dietDay = dietDayRepository.findById(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
+
+        isResourceOwner(dietDay);
+
+        return dietDayAssembler.addMealToDietDay(mealDto, dietDay);
     }
 
     private List<MealDtoRead> setProductsForMeal(DietDay dietDay) {

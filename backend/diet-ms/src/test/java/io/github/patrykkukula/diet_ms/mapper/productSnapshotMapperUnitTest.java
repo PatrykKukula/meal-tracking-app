@@ -1,5 +1,7 @@
 package io.github.patrykkukula.diet_ms.mapper;
 
+import io.github.patrykkukula.diet_ms.builder.ProductQuantityTestBuilder;
+import io.github.patrykkukula.diet_ms.builder.ProductSnapshotTestBuilder;
 import io.github.patrykkukula.diet_ms.constants.ProductCategory;
 import io.github.patrykkukula.diet_ms.dto.ProductDtoRead;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class productSnapshotMapperUnitTest {
     private ProductUpdatedEvent productUpdatedEvent;
-    private ProductSnapshot productSnapshot = new ProductSnapshot();
+    private ProductSnapshot productSnapshot;
     private ProductQuantity productQuantity = new ProductQuantity();
 
     @BeforeEach
@@ -29,15 +31,17 @@ public class productSnapshotMapperUnitTest {
                 "user"
         );
 
-        productSnapshot.setProductId(1L);
-        productSnapshot.setName("product");
-        productSnapshot.setProductCategory(ProductCategory.CEREAL);
-        productSnapshot.setCalories(400);
-        productSnapshot.setProtein(40);
-        productSnapshot.setCarbs(4);
-        productSnapshot.setFat(1);
-        productQuantity.setProductQuantityId(1L);
-        productQuantity.setQuantity(2.0);
+        productSnapshot = ProductSnapshotTestBuilder.productSnapshot()
+                                .name("product")
+                                .productCategory(ProductCategory.CEREAL)
+                                .calories(400)
+                                .protein(40)
+                                .carbs(4)
+                                .fat(1)
+                                .build();
+        productQuantity = ProductQuantityTestBuilder.productQuantity()
+                        .quantity(2.0)
+                        .build();
     }
 
     @Test

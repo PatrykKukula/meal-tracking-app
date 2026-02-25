@@ -4,6 +4,8 @@ import io.github.patrykkukula.diet_ms.dto.DietDayDto;
 import io.github.patrykkukula.diet_ms.dto.MealDto;
 import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
 import io.github.patrykkukula.diet_ms.exception.ProductSnapshotNotFoundException;
+import io.github.patrykkukula.diet_ms.mapper.MealMapper;
+import io.github.patrykkukula.diet_ms.mapper.ProductQuantityMapper;
 import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.Meal;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
@@ -34,7 +36,7 @@ public class DietDayAssembler {
         return dietDay;
     }
 
-    private void addMealToDietDay(MealDto mealDto, DietDay dietDay) {
+    public MealDto addMealToDietDay(MealDto mealDto, DietDay dietDay) {
         if (mealDto.getName() == null || mealDto.getName().isEmpty()) {
             mealDto.setName(DEFAULT_MEAL_NAME);
         }
@@ -47,9 +49,11 @@ public class DietDayAssembler {
                 .forEach(qty -> addProductQuantityToMeal(qty, meal));
 
         dietDay.addMeal(meal);
+
+        return MealMapper.mapMealToMealDto(meal);
     }
 
-    private void addProductQuantityToMeal(ProductQuantityDto productQuantityDto, Meal meal) {
+    public ProductQuantityDto addProductQuantityToMeal(ProductQuantityDto productQuantityDto, Meal meal) {
         ProductQuantity productQuantity = ProductQuantity.fromDto(productQuantityDto);
 
         ProductSnapshot productSnapshot = productSnapshotRepository.findById(productQuantityDto.getProductId())
@@ -59,5 +63,7 @@ public class DietDayAssembler {
         productSnapshot.getProductQuantities().add(productQuantity);
 
         meal.addProductQuantity(productQuantity);
+
+        return ProductQuantityMapper.mapProductQuantityToProductQuantityDto(productQuantity);
     }
 }

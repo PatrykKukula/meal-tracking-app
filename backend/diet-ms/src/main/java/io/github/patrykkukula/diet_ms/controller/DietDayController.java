@@ -2,6 +2,7 @@ package io.github.patrykkukula.diet_ms.controller;
 
 import io.github.patrykkukula.diet_ms.dto.DietDayDto;
 import io.github.patrykkukula.diet_ms.dto.DietDayDtoRead;
+import io.github.patrykkukula.diet_ms.dto.MealDto;
 import io.github.patrykkukula.diet_ms.service.DietDayService;
  import io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,5 +38,11 @@ public class DietDayController {
         dietDayService.removeDietDay(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/add_meal")
+    public ResponseEntity<MealDto> addMealToDietDay(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id,
+                                                    @RequestBody MealDto mealDto) {
+        return ResponseEntity.accepted().body(dietDayService.addMealToDietDay(id, mealDto));
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface DietDayRepository extends JpaRepository<DietDay, Long> {
     @Query("SELECT DISTINCT d FROM DietDay d " +
@@ -13,5 +15,5 @@ public interface DietDayRepository extends JpaRepository<DietDay, Long> {
             "JOIN FETCH m.productQuantities pq " +
             "JOIN FETCH pq.productSnapshot ps " +
             "WHERE d.dietDayId= :dietDayId")
-    public DietDay fetchDietDay(@Param(value = "dietDayId") Long dietDayId);
+    public Optional<DietDay> fetchDietDay(@Param(value = "dietDayId") Long dietDayId);
 }

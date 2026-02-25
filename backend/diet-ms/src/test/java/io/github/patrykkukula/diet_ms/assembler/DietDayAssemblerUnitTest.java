@@ -1,5 +1,9 @@
 package io.github.patrykkukula.diet_ms.assembler;
 
+import io.github.patrykkukula.diet_ms.builder.DietDayDtoTestBuilder;
+import io.github.patrykkukula.diet_ms.builder.MealDtoTestBuilder;
+import io.github.patrykkukula.diet_ms.builder.ProductQuantityDtoTestBuilder;
+import io.github.patrykkukula.diet_ms.builder.ProductSnapshotTestBuilder;
 import io.github.patrykkukula.diet_ms.dto.DietDayDto;
 import io.github.patrykkukula.diet_ms.dto.MealDto;
 import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
@@ -33,23 +37,24 @@ public class DietDayAssemblerUnitTest {
     @InjectMocks
     private DietDayAssembler dietDayAssembler;
 
-    private DietDayDto dietDayDto = new DietDayDto();
-    private MealDto mealDto = new MealDto();
-    private ProductQuantityDto productQuantityDto = new ProductQuantityDto();
-    private ProductSnapshot productSnapshot = new ProductSnapshot();
+    private DietDayDto dietDayDto;
+    private MealDto mealDto;
+    private ProductQuantityDto productQuantityDto;
+    private ProductSnapshot productSnapshot;
 
     @BeforeEach
     public void setUp() {
-        productQuantityDto.setQuantity(2.0);
-        productQuantityDto.setProductId(1L);
-
-        mealDto.setName("breakfast");
-        mealDto.setQuantities(List.of(productQuantityDto));
-
-        dietDayDto.setDate(LocalDate.of(2000, 1, 1));
-        dietDayDto.setMeals(List.of(mealDto));
-
-        productSnapshot.setName("snapshot");
+        productQuantityDto = ProductQuantityDtoTestBuilder.productQuantityDto()
+                .quantity(2.0)
+                .build();
+        mealDto = MealDtoTestBuilder.meal()
+                        .name("breakfast")
+                        .quantities(List.of(productQuantityDto))
+                        .build();
+        dietDayDto = DietDayDtoTestBuilder.dietDayDto()
+                        .meals(List.of(mealDto))
+                        .build();
+        productSnapshot = ProductSnapshotTestBuilder.productSnapshot().build();
     }
 
     @Test
@@ -80,7 +85,7 @@ public class DietDayAssemblerUnitTest {
     }
 
     @Test
-    @DisplayName("should ProductQuantity correctly when assemble diet day")
+    @DisplayName("should create ProductQuantity correctly when assemble diet day")
     public void shouldCreateProductQuantityCorrectlyWhenAssembleDietDay() {
         when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
         when(productSnapshotRepository.findById(anyLong())).thenReturn(Optional.of(productSnapshot));

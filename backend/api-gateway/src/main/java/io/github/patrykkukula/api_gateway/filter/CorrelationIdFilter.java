@@ -29,18 +29,30 @@ public class CorrelationIdFilter implements GlobalFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String correlationId = UUID.randomUUID().toString();
+        long startTime = System.currentTimeMillis();
 
-        log.info("Generated correlationId for request header:{} ", correlationId);
+        try {
+            String correlationId = UUID.randomUUID().toString();
 
-        ServerWebExchange mutatedExchange = exchange.mutate()
-                .request(builder -> builder
-                        .headers(headers -> headers.set(CORRELATION_ID, correlationId))
-                        .build())
-                .build();
+            log.info("Generated correlationId for request header:{} ", correlationId);
 
-        MDC.put(CORRELATION_ID, correlationId);
+            ServerWebExchange mutatedExchange = exchange.mutate()
+                    .request(builder -> builder
+                            .headers(headers -> headers.set(CORRELATION_ID, correlationId))
+                            .build())
+                    .build();
 
-        return chain.filter(mutatedExchange);
+            MDC.put(CORRELATION_ID, correlationId);
+
+            return chain.filter(mutatedExchange);
+        } finally {
+            log.info("Request completed - method:{} | path:{} | Status:{} | durationMs:{}",
+                    exchange.getRequest().getMethod(),
+                    exchange.getRequest().getURI(),
+                    exchange.getResponse().getStatusCode(),
+                    System.currentTimeMillis() - startTime
+            );
+            MDC.clear();
+        }
     }
 }

@@ -3,7 +3,6 @@ package io.github.patrykkukula.diet_ms.security;
 import io.github.patrykkukula.mealtrackingapp_common.exception.AccessDeniedHandlerImpl;
 import io.github.patrykkukula.mealtrackingapp_common.exception.AuthenticationEntryPointImpl;
 import io.github.patrykkukula.mealtrackingapp_common.security.KeycloakRealmRolesConverter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
