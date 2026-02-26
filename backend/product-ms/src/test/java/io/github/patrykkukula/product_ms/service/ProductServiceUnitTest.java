@@ -66,7 +66,7 @@ public class ProductServiceUnitTest {
         product2 = Product.builder()
                 .productId(3L)
                 .name("product3")
-                .productCategory(ProductCategory.FRUITS)
+                .productCategory(ProductCategory.FRUIT)
                 .calories(1)
                 .protein(1)
                 .carbs(1)
