@@ -42,7 +42,7 @@ public class DietDayController {
 
     @PostMapping("/{id}/add_meal")
     public ResponseEntity<MealDto> addMealToDietDay(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id,
-                                                    @RequestBody MealDto mealDto) {
+                                                    @Valid @RequestBody MealDto mealDto) {
         return ResponseEntity.accepted().body(dietDayService.addMealToDietDay(id, mealDto));
     }
 }

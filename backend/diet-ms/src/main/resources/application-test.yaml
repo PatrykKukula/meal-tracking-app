@@ -1,0 +1,36 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:9021/
+    activate:
+      on-profile: "test"
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: "sa"
+    password: ""
+    drive-class-name: org.h2.Driver
+  cloud:
+    function:
+      definition: productCreated; productUpdated; productDeleted
+    stream:
+      bindings:
+        productCreated-in-0:
+          destination: product.created
+          group: ${spring.application.name}
+        productUpdated-in-0:
+          destination: product.updated
+        productDeleted-in-0:
+          destination: product.deleted
+
+rabbit:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+  connection-timeout: 10s
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false

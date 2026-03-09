@@ -2,6 +2,8 @@ package io.github.patrykkukula.diet_ms.exception;
 
 import io.github.patrykkukula.mealtrackingapp_common.dto.ErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -126,6 +128,26 @@ public class GlobalExceptionHandler {
                 new ErrorResponseDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                         HttpStatus.BAD_REQUEST.value(),
                         message,
+                        webRequest.getDescription(false),
+                        setOccurrenceTime()
+                )
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDto> handleConstraintViolationException(ConstraintViolationException ex, WebRequest webRequest) {
+        log.warn(
+                "ConstraintViolationException occurred in Product MS. path={}",
+                webRequest.getDescription(false),
+                ex
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErrorResponseDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        ex.getConstraintViolations().stream()
+                                .map(ConstraintViolation::getMessage)
+                                .collect(Collectors.joining(", ")),
                         webRequest.getDescription(false),
                         setOccurrenceTime()
                 )
