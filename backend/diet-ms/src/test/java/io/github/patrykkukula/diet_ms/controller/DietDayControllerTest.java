@@ -60,7 +60,7 @@ public class DietDayControllerTest {
                 .date(LocalDate.of(2100, 1, 1))
                 .meals(List.of(new MealDto()))
                 .build();
-        dietDayDtoRead = new DietDayDtoRead(1L, "user", Collections.emptyList());
+        dietDayDtoRead = new DietDayDtoRead(1L, "user", LocalDate.now(), Collections.emptyList());
         mealDto = MealDtoTestBuilder.meal()
                 .name("a".repeat(33))
                 .build();

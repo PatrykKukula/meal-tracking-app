@@ -4,15 +4,19 @@ import io.github.patrykkukula.diet_ms.dto.DietDayDto;
 import io.github.patrykkukula.diet_ms.dto.DietDayDtoRead;
 import io.github.patrykkukula.diet_ms.dto.MealDto;
 import io.github.patrykkukula.diet_ms.service.DietDayService;
- import io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils;
+import io.github.patrykkukula.mealtrackingapp_common.utils.BasicUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +35,16 @@ public class DietDayController {
     @GetMapping("/{id}")
     public ResponseEntity<DietDayDtoRead> getDietDayById(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id) {
         return ResponseEntity.ok(dietDayService.getDietDayById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DietDayDtoRead>> getDietDayListForUserForGivenYearAndMonth(
+            @RequestParam(value = "year", required = false) int year,
+            @Min(value = 1, message = "min month is 1") @Max(value = 12, message = "max month is 12")
+            @RequestParam(value = "month") int month) {
+        List<DietDayDtoRead> dietDays = dietDayService.getDietDayListForUserByGivenYearAndMonth(year, month);
+
+        return ResponseEntity.ok(dietDays);
     }
 
     @DeleteMapping("/{id}")

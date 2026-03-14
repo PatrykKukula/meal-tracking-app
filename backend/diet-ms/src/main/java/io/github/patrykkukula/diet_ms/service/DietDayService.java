@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class DietDayService {
 
         DietDay savedDiet = dietDayRepository.save(dietDay);
 
-        return new DietDayDtoRead(savedDiet.getDietDayId(), savedDiet.getOwnerUsername(), setProductsForMeal(dietDay));
+        return new DietDayDtoRead(savedDiet.getDietDayId(), savedDiet.getOwnerUsername(), savedDiet.getDate(), setProductsForMeal(dietDay));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -38,7 +39,31 @@ public class DietDayService {
 
         isResourceOwner(dietDay);
 
-        return new DietDayDtoRead(dietDay.getDietDayId(), dietDay.getOwnerUsername(), setProductsForMeal(dietDay));
+        return new DietDayDtoRead(dietDay.getDietDayId(), dietDay.getOwnerUsername(), dietDay.getDate(), setProductsForMeal(dietDay));
+    }
+
+    /**
+     *
+     * @param year - year to fetch DietDays for, provided from UI request
+     * @param month - month in a given year to fetch DietDays for, provided from UI request
+     * @return List of DietDayDtoRead
+     */
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<DietDayDtoRead> getDietDayListForUserByGivenYearAndMonth(int year, int month) {
+        if (year <= 2021 || year >= LocalDate.now().getYear() + 5) {
+            throw new IllegalArgumentException("Year must be at least 2021 and cannot be more than current year plus 5 years");
+        }
+        String username = authenticationUtils.getAuthenticatedUserUsername();
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.plusMonths(1);
+
+        return dietDayRepository.fetchDietDaysForUserForGivenYearAndMonth(startDate, endDate, username)
+                .stream()
+                .map(dietDay -> {
+                    return new DietDayDtoRead(dietDay.getDietDayId(), dietDay.getOwnerUsername(), dietDay.getDate(), setProductsForMeal(dietDay));
+                })
+                .toList();
     }
 
     @Transactional
@@ -61,6 +86,9 @@ public class DietDayService {
         return dietDayAssembler.addMealToDietDay(mealDto, dietDay);
     }
 
+    /*
+        set products for meal
+     */
     private List<MealDtoRead> setProductsForMeal(DietDay dietDay) {
         return dietDay.getMeals()
                 .stream()
