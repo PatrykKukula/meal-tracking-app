@@ -98,8 +98,6 @@ public class DietDayControllerTest {
             @Test
             @DisplayName("should allow authenticated endpoints")
             public void shouldAllowAuthenticatedEndpoints() throws Exception {
-                when(dietDayService.createDietDay(any(DietDayDto.class))).thenReturn(dietDayDtoRead);
-
                 mockMvc.perform(post(BASE_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(dietDayDto))
