@@ -9,6 +9,7 @@ import io.github.patrykkukula.diet_ms.dto.MealDto;
 import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
 import io.github.patrykkukula.diet_ms.exception.DietDayNotFoundException;
 import io.github.patrykkukula.diet_ms.exception.ProductSnapshotNotFoundException;
+import io.github.patrykkukula.diet_ms.security.SecurityConfig;
 import io.github.patrykkukula.diet_ms.service.DietDayService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,6 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(DietDayController.class)
+@Import(SecurityConfig.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class DietDayControllerTest {
@@ -53,6 +56,7 @@ public class DietDayControllerTest {
     private MealDto mealDto;
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtAdmin;
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtUser;
+    private SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor csrf;
 
     @BeforeEach
     public void setUp() {
@@ -71,6 +75,8 @@ public class DietDayControllerTest {
         jwtUser = SecurityMockMvcRequestPostProcessors
                 .jwt()
                 .authorities(new SimpleGrantedAuthority("ROLE_USER"));
+
+        csrf = SecurityMockMvcRequestPostProcessors.csrf();
     }
 
     @Nested
@@ -115,8 +121,9 @@ public class DietDayControllerTest {
                 public void shouldDenyAuthenticatedEndpoints() throws Exception {
                     mockMvc.perform(post(BASE_URL)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(mapper.writeValueAsString(dietDayDto)))
-                            .andExpect(status().isForbidden());
+                                    .content(mapper.writeValueAsString(dietDayDto))
+                                    .with(csrf))
+                            .andExpect(status().isUnauthorized());
 
                     verifyNoInteractions(dietDayService);
                 }
@@ -129,12 +136,13 @@ public class DietDayControllerTest {
             @Test
             @DisplayName("should respond 403 when enter authenticated endpoints")
             public void shouldDenyAuthenticatedEndpoints() throws Exception {
-                jwtAdmin.authorities(new SimpleGrantedAuthority("UNKNOWN_ROLE"));
+                SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwt = SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("UNKNOWN_ROLE"));
                 when(dietDayService.createDietDay(any(DietDayDto.class))).thenReturn(dietDayDtoRead);
 
                 mockMvc.perform(post(BASE_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(dietDayDto)))
+                                .content(mapper.writeValueAsString(dietDayDto))
+                                .with(jwt))
                         .andExpect(status().isForbidden());
 
                 verifyNoInteractions(dietDayService);
