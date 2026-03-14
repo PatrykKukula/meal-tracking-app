@@ -56,7 +56,6 @@ public class DietDayControllerTest {
     private MealDto mealDto;
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtAdmin;
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtUser;
-    private SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor csrf;
 
     @BeforeEach
     public void setUp() {
@@ -75,8 +74,6 @@ public class DietDayControllerTest {
         jwtUser = SecurityMockMvcRequestPostProcessors
                 .jwt()
                 .authorities(new SimpleGrantedAuthority("ROLE_USER"));
-
-        csrf = SecurityMockMvcRequestPostProcessors.csrf();
     }
 
     @Nested
@@ -121,8 +118,7 @@ public class DietDayControllerTest {
                 public void shouldDenyAuthenticatedEndpoints() throws Exception {
                     mockMvc.perform(post(BASE_URL)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(mapper.writeValueAsString(dietDayDto))
-                                    .with(csrf))
+                                    .content(mapper.writeValueAsString(dietDayDto)))
                             .andExpect(status().isUnauthorized());
 
                     verifyNoInteractions(dietDayService);
