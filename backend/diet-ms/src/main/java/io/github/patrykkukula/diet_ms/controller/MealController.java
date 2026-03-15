@@ -2,14 +2,17 @@ package io.github.patrykkukula.diet_ms.controller;
 
 import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
 import io.github.patrykkukula.diet_ms.service.MealService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/diets/meal")
 @RequiredArgsConstructor
+@Validated
 public class MealController {
     private final MealService mealService;
 
@@ -22,7 +25,7 @@ public class MealController {
 
     @PostMapping("/{id}/add_quantity")
     public ResponseEntity<ProductQuantityDto> addProductQuantityToMeal(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id,
-                                                                       @RequestBody ProductQuantityDto productQuantityDto) {
+                                                                       @Valid @RequestBody ProductQuantityDto productQuantityDto) {
         return ResponseEntity.accepted().body(mealService.addProductQuantityToMeal(id, productQuantityDto));
     }
 }

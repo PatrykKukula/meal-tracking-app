@@ -25,6 +25,7 @@ public class SecurityConfig {
 
         httpSecurity.sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityContext(scc -> scc.requireExplicitSave(false))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize.
                         requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole(ROLE_ADMIN)

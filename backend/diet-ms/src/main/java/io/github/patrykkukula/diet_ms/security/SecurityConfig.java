@@ -20,16 +20,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) {
 
-        httpSecurity.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/diets/**").authenticated())
+        httpSecurity.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/diets/**").hasAnyRole("ADMIN", "USER")
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .securityContext(scc -> scc.requireExplicitSave(false));
+                .securityContext(scc -> scc.requireExplicitSave(false))
+                .csrf(csrf -> csrf.disable());
 
         httpSecurity.exceptionHandling( ehc -> {
             ehc.accessDeniedHandler(accessDeniedHandler());
             ehc.authenticationEntryPoint(authenticationEntryPoint());
         });
+
 
         return httpSecurity.build();
     }
