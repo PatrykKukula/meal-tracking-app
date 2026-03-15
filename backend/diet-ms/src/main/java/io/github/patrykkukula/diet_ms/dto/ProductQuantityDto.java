@@ -12,7 +12,7 @@ public class ProductQuantityDto {
     @NotNull(message = "ProductId cannot be empty")
     private Long productId;
 
-    @Positive(message = "Specify product quantity")
+    @Positive(message = "Product quantity must be positive value")
     @NotNull(message = "Specify product quantity")
     private double quantity;
 }

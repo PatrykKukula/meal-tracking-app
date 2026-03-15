@@ -13,7 +13,7 @@ public class BasicUtils {
     // Set resource URI location
     public static URI setLocation(Long id, HttpServletRequest request) {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/products" + "/{id}")
+                .path(request.getRequestURI() + "/{id}")
                 .buildAndExpand(id)
                 .toUri();
     }

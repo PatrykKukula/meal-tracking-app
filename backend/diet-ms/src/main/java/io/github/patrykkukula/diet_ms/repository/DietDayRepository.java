@@ -32,4 +32,7 @@ public interface DietDayRepository extends JpaRepository<DietDay, Long> {
             @Param(value = "startDate") LocalDate startDate,
             @Param(value = "endDate") LocalDate endDate,
             @Param(value = "username") String username);
+
+    @Query("SELECT d FROM DietDay d JOIN FETCH d.meals WHERE d.dietDayId= :id")
+    public Optional<DietDay> findByIdWithMeals(@Param(value = "id") Long id);
 }
