@@ -8,6 +8,9 @@ spring:
     username: "sa"
     password: ""
     drive-class-name: org.h2.Driver
+  sql:
+    init:
+      mode: never
 eureka:
   instance:
     preferIpAddress: true

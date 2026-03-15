@@ -1,10 +1,7 @@
 package io.github.patrykkukula.product_ms.security;
 
 import io.github.patrykkukula.product_ms.model.Product;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -52,94 +49,111 @@ public class AuthenticationUtilsTest {
         SecurityContextHolder.clearContext();
     }
 
-    @Test
-    @DisplayName("Should get JwtAuthenticationToken correctly")
-    public void shouldGetJwtAuthenticationTokenCorrectly() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+    @Nested
+    @DisplayName("when getJwtAuthenticationToken")
+    class whenGetJwtAuthenticationToken {
+        @Test
+        @DisplayName("Should get JwtAuthenticationToken correctly")
+        public void shouldGetJwtAuthenticationTokenCorrectly() {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        JwtAuthenticationToken token = authenticationUtils.getJwtAuthenticationToken();
+            JwtAuthenticationToken token = authenticationUtils.getJwtAuthenticationToken();
 
-        assertNotNull(token);
-        assertEquals(jwt, token.getToken());
+            assertNotNull(token);
+            assertEquals(jwt, token.getToken());
+        }
+
+        @Test
+        @DisplayName("Should throw AccessDeniedException when token is not JWT")
+        public void shouldThrowAccessDeniedExceptionWhenTokenIsNotJwt() {
+            when(securityContext.getAuthentication()).thenReturn(new TestingAuthenticationToken(
+                    new Object(), new Object())
+            );
+
+            assertThrows(AccessDeniedException.class, () -> authenticationUtils.getJwtAuthenticationToken());
+        }
     }
 
-    @Test
-    @DisplayName("Should throw AccessDeniedException when get jwt authentication token and token is different type")
-    public void shouldThrowAccessDeniedExceptionWhenGetJwtAuthenticationTokenAndTokenIsDifferentType() {
-        when(securityContext.getAuthentication()).thenReturn(new TestingAuthenticationToken(
-                new Object(), new Object())
-        );
+    @Nested
+    @DisplayName("when getAuthenticatedUserUsername")
+    class whenGetAuthenticatedUserUsername {
+        @Test
+        @DisplayName("Should get username correctly")
+        public void shouldGetUsernameCorrectly() {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        assertThrows(AccessDeniedException.class, () -> authenticationUtils.getJwtAuthenticationToken());
+            String username = authenticationUtils.getAuthenticatedUserUsername();
+
+            assertEquals("admin", username);
+        }
     }
 
-    @Test
-    @DisplayName("Should get authenticated username correctly")
-    public void shouldGetAuthenticatedUserUsernameCorrectly() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+    @Nested
+    @DisplayName("when isAdmin")
+    class whenIsAdmin {
+        @Test
+        @DisplayName("Should return true if user is admin")
+        public void shouldReturnTrueIfUserIsAdmin() {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        String username = authenticationUtils.getAuthenticatedUserUsername();
+            boolean isAdmin = authenticationUtils.isAdmin();
 
-        assertEquals("admin", username);
+            assertTrue(isAdmin);
+        }
+
+        @Test
+        @DisplayName("Should return false if user is not admin")
+        public void shouldReturnFalseIfUserIsNotAdmin() {
+            authentication = new JwtAuthenticationToken(jwt, AuthorityUtils.createAuthorityList("ROLE_USER"));
+
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+
+            boolean isAdmin = authenticationUtils.isAdmin();
+
+            assertFalse(isAdmin);
+        }
     }
 
-    @Test
-    @DisplayName("Should return true if user is admin")
-    public void shouldReturnTrueIfUserIsAdmin() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+    @Nested
+    @DisplayName("when canUserModifyProduct")
+    class whenCanUserModifyProduct {
+        @Test
+        @DisplayName("Should return true for public product with ROLE_ADMIN")
+        public void shouldReturnTrueForPublicProductWithRoleAdmin() {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        boolean isAdmin = authenticationUtils.isAdmin();
+            boolean canModify = authenticationUtils.canUserModifyProduct(Product.builder().build());
 
-        assertTrue(isAdmin);
+            assertTrue(canModify);
+        }
+
+        @Test
+        @DisplayName("Should throw AccessDeniedException for public product with ROLE_USER")
+        public void shouldThrowAccessDeniedExceptionForPublicProductWithRoleUser() {
+            authentication = new JwtAuthenticationToken(jwt, AuthorityUtils.createAuthorityList("ROLE_USER"));
+
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+
+            assertThrows(AccessDeniedException.class, () -> authenticationUtils.canUserModifyProduct(Product.builder().build()));
+        }
+
+        @Test
+        @DisplayName("Should return true for private product with ROLE_USER")
+        public void shouldReturnTrueForPrivateProductWithRoleUser() {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+
+            boolean canModify = authenticationUtils.canUserModifyProduct(Product.builder().ownerUsername("admin").build());
+
+            assertTrue(canModify);
+        }
+
+        @Test
+        @DisplayName("Should throw AccessDeniedException when product have different owner")
+        public void shouldThrowAccessDeniedExceptionWhenCanUserModifyProductWithRoleUserAndProductHaveDifferentOwner() {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+
+            assertThrows(AccessDeniedException.class, () -> authenticationUtils.canUserModifyProduct(Product.builder().ownerUsername("different").build()));
+        }
     }
 
-    @Test
-    @DisplayName("Should return false if user is user")
-    public void shouldReturnFalseIfUserIsUser() {
-        authentication = new JwtAuthenticationToken(jwt, AuthorityUtils.createAuthorityList("ROLE_USER"));
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        boolean isAdmin = authenticationUtils.isAdmin();
-
-        assertFalse(isAdmin);
-    }
-
-    @Test
-    @DisplayName("Should return true when can user modify product with ROLE_ADMIN and public product")
-    public void shouldReturnTrueWhenCanUserModifyProductWithRoleAdminAndPublicProduct() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        boolean canModify = authenticationUtils.canUserModifyProduct(Product.builder().build());
-
-        assertTrue(canModify);
-    }
-
-    @Test
-    @DisplayName("Should throw AccessDeniedException when can user modify product with ROLE_USER and public product")
-    public void shouldThrowAccessDeniedExceptionWhenCanUserModifyProductWithRoleUserAndPublicProduct() {
-        authentication = new JwtAuthenticationToken(jwt, AuthorityUtils.createAuthorityList("ROLE_USER"));
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        assertThrows(AccessDeniedException.class, () -> authenticationUtils.canUserModifyProduct(Product.builder().build()));
-    }
-
-    @Test
-    @DisplayName("Should return true when can user modify product with ROLE_USER and private product")
-    public void shouldReturnTrueWhenCanUserModifyProductWithRoleUserAndPrivateProduct() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        boolean canModify = authenticationUtils.canUserModifyProduct(Product.builder().ownerUsername("admin").build());
-
-        assertTrue(canModify);
-    }
-
-    @Test
-    @DisplayName("Should throw AccessDeniedException when can user modify product with ROLE_USER and product have different owner")
-    public void shouldThrowAccessDeniedExceptionWhenCanUserModifyProductWithRoleUserAndProductHaveDifferentOwner() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        assertThrows(AccessDeniedException.class, () -> authenticationUtils.canUserModifyProduct(Product.builder().ownerUsername("different").build()));
-    }
 }
