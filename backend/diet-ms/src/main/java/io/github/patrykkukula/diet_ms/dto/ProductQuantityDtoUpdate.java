@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class ProductQuantityDtoUpdate {
-    @Positive(message = "Specify product quantity")
+    @Positive(message = "Product quantity must be greater than 0")
     @NotNull(message = "Specify product quantity")
     private double quantity;
 }

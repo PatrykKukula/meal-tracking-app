@@ -37,11 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class MealControllerTest {
     @Autowired
-    public MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
-    public ObjectMapper mapper;
+    private ObjectMapper mapper;
     @MockitoBean
-    public MealService mealService;
+    private MealService mealService;
 
     private ProductQuantityDto productQuantityDto;
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtAdmin;
