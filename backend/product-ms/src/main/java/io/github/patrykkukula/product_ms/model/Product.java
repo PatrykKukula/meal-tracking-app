@@ -6,7 +6,7 @@ import lombok.*;
 
 @Entity
 @Builder
-@NoArgsConstructor (access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
 public class Product {
