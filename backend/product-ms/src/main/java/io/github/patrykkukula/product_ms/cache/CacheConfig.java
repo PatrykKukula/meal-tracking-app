@@ -18,14 +18,13 @@ public class CacheConfig {
     @Bean
     @Primary
     public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager() {
+        return new CaffeineCacheManager() {
             @Override
             protected Cache createCaffeineCache(String name) {
                 com.github.benmanes.caffeine.cache.Cache<Object, Object> cache = cacheBuilder().build();
                 return new CaffeineCacheImpl(name, cache);
             }
         };
-        return cacheManager;
     }
 
     private Caffeine<Object, Object> cacheBuilder() {
