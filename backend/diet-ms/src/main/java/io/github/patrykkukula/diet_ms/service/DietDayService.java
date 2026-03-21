@@ -1,6 +1,7 @@
 package io.github.patrykkukula.diet_ms.service;
 
 import io.github.patrykkukula.diet_ms.assembler.DietDayAssembler;
+import io.github.patrykkukula.diet_ms.cache.CacheUtils;
 import io.github.patrykkukula.diet_ms.dto.*;
 import io.github.patrykkukula.diet_ms.exception.DietDayNotFoundException;
 import io.github.patrykkukula.diet_ms.model.DietDay;
@@ -8,6 +9,8 @@ import io.github.patrykkukula.diet_ms.repository.DietDayRepository;
 import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,12 @@ public class DietDayService {
     private final ProductSnapshotService productSnapshotService;
     private final DietDayAssembler dietDayAssembler;
     private final AuthenticationUtils authenticationUtils;
+    private final CacheUtils cacheUtils;
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @CacheEvict(value = "monthlyDiets",
+            key = "#result.date.getYear() + '-' + #result.date.getMonthValue() + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
     public DietDayDtoRead createDietDay(DietDayDto dietDayDto) {
         DietDay dietDay = dietDayAssembler.assemble(dietDayDto);
 
@@ -34,6 +40,7 @@ public class DietDayService {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Cacheable(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
     public DietDayDtoRead getDietDayById(Long dietDayId) {
         DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
@@ -49,6 +56,7 @@ public class DietDayService {
      * @return List of DietDayDtoRead
      */
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Cacheable(value = "monthlyDiets", key = "#year + '-' + #month + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
     public List<DietDayDtoRead> getDietDayListForUserByGivenYearAndMonth(int year, int month) {
         if (year <= 2021 || year >= LocalDate.now().getYear() + 5) {
             throw new IllegalArgumentException("Year must be at least 2021 and cannot be more than current year plus 5 years");
@@ -68,20 +76,26 @@ public class DietDayService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @CacheEvict(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
     public void removeDietDay(Long dietDayId) {
         DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
         isResourceOwner(dietDay);
 
         dietDayRepository.delete(dietDay);
+
+        cacheUtils.evictMonthlyDietsCache(dietDay);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @CacheEvict(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
     public MealDto addMealToDietDay(Long dietDayId, MealDto mealDto) {
         DietDay dietDay = dietDayRepository.findById(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
         isResourceOwner(dietDay);
+
+        cacheUtils.evictMonthlyDietsCache(dietDay);
 
         return dietDayAssembler.addMealToDietDay(mealDto, dietDay);
     }

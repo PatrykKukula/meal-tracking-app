@@ -1,4 +1,4 @@
-package io.github.patrykkukula.product_ms.cache;
+package io.github.patrykkukula.mealtrackingapp_common.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,15 @@ public class CaffeineCacheImpl extends CaffeineCache {
     public void evict(Object key) {
         log.info("[CACHE EVICT {}] key={}", getName(), key);
         super.evict(key);
+    }
+
+    @Override
+    public boolean evictIfPresent(Object key) {
+        boolean evicted = super.evictIfPresent(key);
+
+        log.info("[CACHE EVICT {}] key={} success: {}", getName(), key, evicted);
+
+        return evicted;
     }
 
     @Override

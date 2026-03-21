@@ -83,7 +83,7 @@ public class ProductService {
         return savedDto;
     }
 
-    @Cacheable(value = "product", unless = "#result.ownerUsername != null")
+    @Cacheable(value = "product", key = "#productId", unless = "#result.ownerUsername != null")
     public ProductDto findProductById(Long productId) {
         Product product = fetchProductById(productId);
 
