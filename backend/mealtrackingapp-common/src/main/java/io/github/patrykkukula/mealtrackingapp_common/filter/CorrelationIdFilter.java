@@ -1,4 +1,4 @@
-package io.github.patrykkukula.diet_ms.filter;
+package io.github.patrykkukula.mealtrackingapp_common.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,7 +43,6 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
                     request.getRequestURI());
 
             response.setHeader(CORRELATION_ID, correlationId);
-
             filterChain.doFilter(request, response);
         } finally {
             log.info("Request completed - method:{} | path:{} | Status:{} | durationMs:{}",
