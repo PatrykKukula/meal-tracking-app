@@ -1,4 +1,4 @@
-package io.github.patrykkukula.mealtrackingapp_common.events;
+package io.github.patrykkukula.mealtrackingapp_common.events.product;
 
 public record ProductCreatedEvent(Long productId,
                                   String name,
@@ -7,5 +7,10 @@ public record ProductCreatedEvent(Long productId,
                                   Integer protein,
                                   Integer carbs,
                                   Integer fat,
-                                  String ownerUsername) {
+                                  String ownerUsername)
+implements BasicProductEvent {
+    @Override
+    public String routingKey() {
+        return "product.added";
+    }
 }
