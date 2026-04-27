@@ -1,12 +1,11 @@
-package io.github.patrykkukula.diet_ms.repository;
+package io.github.patrykkukula.product_ms.repository;
 
-import io.github.patrykkukula.diet_ms.model.OutboxEvent;
+import io.github.patrykkukula.product_ms.model.OutboxEvent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 
 import java.util.List;
 
@@ -14,15 +13,15 @@ import java.util.List;
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> {
 
     @Query("SELECT e FROM OutboxEvent WHERE " +
-                "e.status = io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.NEW " +
-                "OR " +
-                "e.status = io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.FAILED")
+            "e.status = io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.NEW " +
+            "OR " +
+            "e.status = io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.FAILED")
     List<OutboxEvent> getUnsentEvents(Pageable pageable);
 
     @Query("DELETE e FROM OutboxEvent WHERE " +
-                "e.status = io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.DEAD" +
-                "OR" +
-                "io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.SENT")
+            "e.status = io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.DEAD" +
+            "OR" +
+            "io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.SENT")
     @Modifying
     void deleteSentEvents();
 }

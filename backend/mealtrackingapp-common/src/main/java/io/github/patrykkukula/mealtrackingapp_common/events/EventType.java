@@ -15,7 +15,7 @@ public enum EventType {
     PRODUCT_UPDATED_IN_MEAL("product.updated.in.meal", ProductUpdatedInMealEvent.class),
     PRODUCT_ADDED("product.created", ProductCreatedEvent.class),
     PRODUCT_UPDATED("product.updated", ProductUpdatedEvent.class),
-    PRODUCT_DELETED("product.deleted", null);
+    PRODUCT_DELETED("product.deleted", ProductDeletedEvent.class);
 
     private final String routingKey;
     private final Class<? extends BasicProductEvent> eventClass;

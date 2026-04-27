@@ -1,11 +1,11 @@
-package io.github.patrykkukula.diet_ms.factory;
+package io.github.patrykkukula.product_ms.factory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.patrykkukula.diet_ms.model.OutboxEvent;
 import io.github.patrykkukula.mealtrackingapp_common.events.EventType;
 import io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus;
 import io.github.patrykkukula.mealtrackingapp_common.events.product.BasicProductEvent;
+import io.github.patrykkukula.product_ms.model.OutboxEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

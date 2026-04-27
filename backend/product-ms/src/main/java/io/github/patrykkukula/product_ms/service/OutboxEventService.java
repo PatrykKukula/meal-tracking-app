@@ -1,11 +1,11 @@
-package io.github.patrykkukula.diet_ms.service;
+package io.github.patrykkukula.product_ms.service;
 
-import io.github.patrykkukula.diet_ms.factory.ProductEventFactory;
-import io.github.patrykkukula.diet_ms.repository.OutboxEventRepository;
 import io.github.patrykkukula.mealtrackingapp_common.events.EventBindingConfig;
 import io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus;
 import io.github.patrykkukula.mealtrackingapp_common.events.ProductEventSender;
 import io.github.patrykkukula.mealtrackingapp_common.events.product.BasicProductEvent;
+import io.github.patrykkukula.product_ms.factory.ProductEventFactory;
+import io.github.patrykkukula.product_ms.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -40,7 +40,6 @@ public class OutboxEventService {
                     catch (Exception ex) {
                         log.warn("Failed to send event: {}", event.getOutboxEventId(), ex);
                         if (event.getRetryCount() >= 5) {
-                            log.warn("Retry count limit exceed. Mark event DEAD");
                             event.setStatus(OutboxEventStatus.DEAD);                // mark dead if event failed to send too many times
                         }
                         else {
