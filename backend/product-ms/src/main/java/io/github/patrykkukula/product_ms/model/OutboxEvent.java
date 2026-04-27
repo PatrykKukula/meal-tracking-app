@@ -1,4 +1,4 @@
-package io.github.patrykkukula.diet_ms.model;
+package io.github.patrykkukula.product_ms.model;
 
 import io.github.patrykkukula.mealtrackingapp_common.events.EventType;
 import io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus;

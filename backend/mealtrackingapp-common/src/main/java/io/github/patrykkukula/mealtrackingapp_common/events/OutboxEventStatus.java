@@ -1,4 +1,4 @@
-package io.github.patrykkukula.diet_ms.constants;
+package io.github.patrykkukula.mealtrackingapp_common.events;
 
 public enum OutboxEventStatus {
     SENT, NEW, FAILED, DEAD
