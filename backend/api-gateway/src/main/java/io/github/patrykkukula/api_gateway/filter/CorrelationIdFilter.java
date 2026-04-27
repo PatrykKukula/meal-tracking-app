@@ -9,26 +9,28 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
-public class CorrelationIdFilter implements GlobalFilter {
+public class CorrelationIdFilter implements WebFilter {
     private final String CORRELATION_ID = "correlation-id";
     private static final Logger log = LoggerFactory.getLogger(CorrelationIdFilter.class);
 
     /**
-     * Process the Web request and (optionally) delegate to the next {@code GatewayFilter}
-     * through the given {@link GatewayFilterChain}.
+     * Process the Web request and (optionally) delegate to the next
+     * {@code WebFilter} through the given {@link WebFilterChain}.
      *
      * @param exchange the current server exchange
      * @param chain    provides a way to delegate to the next filter
      * @return {@code Mono<Void>} to indicate when request processing is complete
      */
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         long startTime = System.currentTimeMillis();
 
         try {

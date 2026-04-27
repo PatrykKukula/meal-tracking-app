@@ -13,8 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.UUID;
 
-import static io.github.patrykkukula.diet_ms.filter.GlobalConstants.CORRELATION_ID;
-
 /*
  * Filter to add correlation-id to header and to log entering to and leaving from request
  */
@@ -22,6 +20,7 @@ import static io.github.patrykkukula.diet_ms.filter.GlobalConstants.CORRELATION_
 @Order(OrderedFilter.HIGHEST_PRECEDENCE)
 @Slf4j
 public class CorrelationIdFilter extends OncePerRequestFilter {
+    private static final String CORRELATION_ID = "correlation-id";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
