@@ -1,5 +1,6 @@
 package io.github.patrykkukula.api_gateway.security;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +24,19 @@ public class SecurityConfig {
     private String issuerUri;
     private final String ALLOWED_ORIGIN = "http://localhost:5173";
 
+    @PostConstruct
+    public void debug() {
+        System.out.println("ISSUER URI USED BY APP: " + issuerUri);
+    }
+
     @Bean
     public SecurityWebFilterChain security(ServerHttpSecurity serverHttpSecurity) {
         serverHttpSecurity.authorizeExchange(exchanges -> {
             exchanges.pathMatchers(HttpMethod.GET).permitAll()
                     .pathMatchers(HttpMethod.OPTIONS).permitAll()
                     .anyExchange().authenticated();
-        }).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder())));
+        }).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder())))
+                .csrf(csrf -> csrf.disable());
 
         serverHttpSecurity.cors(Customizer.withDefaults());
 

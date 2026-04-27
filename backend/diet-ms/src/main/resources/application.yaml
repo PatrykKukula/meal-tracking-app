@@ -36,6 +36,12 @@ spring:
           destination: product.updated
         productDeleted-in-0:
           destination: product.deleted
+        productAddedToMeal-out-0:
+          destination: product.added.to.meal
+        productRemovedFromMeal-out-0:
+          destination: product.removed.from.meal
+        productUpdatedInMeal-out-0:
+          destination: product.updated.in.meal
 
 rabbit:
   host: localhost
