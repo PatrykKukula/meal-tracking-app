@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DietDayServiceUnitTest {
+public class    DietDayServiceUnitTest {
     @Mock
     private DietDayRepository dietDayRepository;
     @Mock
@@ -182,11 +182,11 @@ public class DietDayServiceUnitTest {
         public void shouldReturnAddedMealCorrectly() {
             when(dietDayRepository.findById(anyLong())).thenReturn(Optional.of(dietDay));
             when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
-            when(dietDayAssembler.addMealToDietDay(any(MealDto.class), any(DietDay.class))).thenReturn(mealDto);
+            when(dietDayAssembler.addMealToDietDay(any(MealDto.class), any(DietDay.class), anyString())).thenReturn(mealDto);
 
             MealDto addedMeal = dietDayService.addMealToDietDay(1L, mealDto);
 
-            verify(dietDayAssembler, times(1)).addMealToDietDay(eq(mealDto), eq(dietDay));
+            verify(dietDayAssembler, times(1)).addMealToDietDay(eq(mealDto), eq(dietDay), eq("user"));
             assertEquals("dinner", addedMeal.getName());
             assertEquals(1, addedMeal.getQuantities().size());
         }

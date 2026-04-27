@@ -4,7 +4,7 @@ import io.github.patrykkukula.diet_ms.builder.ProductSnapshotTestBuilder;
 import io.github.patrykkukula.diet_ms.constants.ProductCategory;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
 import io.github.patrykkukula.diet_ms.repository.ProductSnapshotRepository;
-import io.github.patrykkukula.mealtrackingapp_common.events.ProductUpdatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductUpdatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

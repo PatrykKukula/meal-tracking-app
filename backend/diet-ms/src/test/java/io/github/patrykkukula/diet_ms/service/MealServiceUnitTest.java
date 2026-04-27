@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MealServiceUnitTest {
+public class    MealServiceUnitTest {
     @Mock
     private MealRepository mealRepository;
     @Mock
@@ -99,11 +99,11 @@ public class MealServiceUnitTest {
         public void shouldCallDietDayAssemblerCorrectly() {
             when(mealRepository.findById(anyLong())).thenReturn(Optional.of(meal));
             when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
-            when(dietDayAssembler.addProductQuantityToMeal(any(ProductQuantityDto.class), any(Meal.class))).thenReturn(dto);
+            when(dietDayAssembler.addProductQuantityToMeal(any(ProductQuantityDto.class), any(Meal.class), anyString())).thenReturn(dto);
 
             ProductQuantityDto returned = mealService.addProductQuantityToMeal(1L, dto);
 
-            verify(dietDayAssembler, times(1)).addProductQuantityToMeal(eq(dto), eq(meal));
+            verify(dietDayAssembler, times(1)).addProductQuantityToMeal(eq(dto), eq(meal), eq("user"));
             assertEquals(2.0, returned.getQuantity());
             assertEquals(1L, returned.getProductId());
         }
