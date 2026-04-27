@@ -1,0 +1,86 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: statistics
+  config:
+    import: optional:configserver:http://localhost:9021/
+  datasource:
+    url: jdbc:postgresql://localhost:5433/statisticsdb
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
+    drive-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:7080/realms/MealTrackingApp
+          jwk-set-uri: http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs
+  cloud:
+    stream:
+      bindings:
+        productCreated-in-0:
+          destination: product.created
+        productDeleted-in-0:
+          destination: product.deleted
+        productAddedToMeal-in-0:
+          destination: product.added.to.meal
+        productRemovedFromMeal-in-0:
+          destination: product.removed.from.meal
+        productUpdatedInMeal-in-0:
+          destination: product.updated.in.meal
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "Statistics MS"
+    description: "Microservice for Statistics in Meal Tracking Application"
+    version: 1.0.0
+
+logging:
+  level:
+    io:
+      github:
+        patrykkukula:
+          statistics-ms: TRACE
+    org:
+      springframework:
+        security: TRACE
+  pattern:
+    console: "%d{HH:mm:ss} [correlation-id:%X{correlation-id}] %-5level %logger - %msg%n"
