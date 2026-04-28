@@ -4,7 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"io.github.patrykkukula.mealtrackingapp_common",
+        "io.github.patrykkukula.product_ms"}
+)
 @EnableMethodSecurity
 public class ProductMicroserviceApplication {
 
