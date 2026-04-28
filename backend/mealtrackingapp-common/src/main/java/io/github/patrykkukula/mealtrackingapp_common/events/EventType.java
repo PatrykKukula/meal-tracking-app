@@ -13,7 +13,7 @@ public enum EventType {
     PRODUCT_ADDED_TO_MEAL("product.added.to.meal", ProductAddedToMealEvent.class),
     PRODUCT_REMOVED_FROM_MEAL("product.removed.from.meal", ProductRemovedFromMealEvent.class),
     PRODUCT_UPDATED_IN_MEAL("product.updated.in.meal", ProductUpdatedInMealEvent.class),
-    PRODUCT_ADDED("product.created", ProductCreatedEvent.class),
+    PRODUCT_ADDED("product.added", ProductCreatedEvent.class),
     PRODUCT_UPDATED("product.updated", ProductUpdatedEvent.class),
     PRODUCT_DELETED("product.deleted", ProductDeletedEvent.class);
 
