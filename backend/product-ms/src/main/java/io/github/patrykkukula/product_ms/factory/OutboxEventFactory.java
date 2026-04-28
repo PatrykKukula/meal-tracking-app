@@ -19,6 +19,7 @@ public class OutboxEventFactory {
     private final ObjectMapper objectMapper;
 
     public OutboxEvent create(BasicProductEvent event) {
+        log.info("Creating OutboxEvent for routingKey: {}", event.routingKey());
         try {
             return new OutboxEvent(
                     null,
