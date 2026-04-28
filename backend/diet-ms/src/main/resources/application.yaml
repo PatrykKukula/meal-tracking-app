@@ -34,14 +34,19 @@ spring:
           group: ${spring.application.name}
         productUpdated-in-0:
           destination: product.updated
+          group: ${spring.application.name}
         productDeleted-in-0:
           destination: product.deleted
+          group: ${spring.application.name}
         productAddedToMeal-out-0:
           destination: product.added.to.meal
+          group: ${spring.application.name}
         productRemovedFromMeal-out-0:
           destination: product.removed.from.meal
+          group: ${spring.application.name}
         productUpdatedInMeal-out-0:
           destination: product.updated.in.meal
+          group: ${spring.application.name}
 
 rabbit:
   host: localhost
