@@ -1,13 +1,17 @@
 package io.github.patrykkukula.product_ms.service;
 
-import io.github.patrykkukula.mealtrackingapp_common.events.ProductCreatedEvent;
-import io.github.patrykkukula.mealtrackingapp_common.events.ProductUpdatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductCreatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductDeletedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductUpdatedEvent;
 import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.exception.CustomProductAmountExceededException;
 import io.github.patrykkukula.product_ms.exception.ProductNotFoundException;
+import io.github.patrykkukula.product_ms.factory.OutboxEventFactory;
 import io.github.patrykkukula.product_ms.mapper.ProductMapper;
+import io.github.patrykkukula.product_ms.model.OutboxEvent;
 import io.github.patrykkukula.product_ms.model.Product;
+import io.github.patrykkukula.product_ms.repository.OutboxEventRepository;
 import io.github.patrykkukula.product_ms.repository.ProductRepository;
 import io.github.patrykkukula.product_ms.security.AuthenticationUtils;
 import jakarta.transaction.Transactional;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +37,8 @@ public class ProductService {
     private final AuthenticationUtils authenticationUtils;
     private final ProductRepository productRepository;
     private final StreamBridge streamBridge;
+    private final OutboxEventFactory outboxEventFactory;
+    private final OutboxEventRepository outboxEventRepository;
     private final int PAGE_SIZE = 50;
     private final int MAX_CUSTOM_PRODUCTS = 100;
 
@@ -39,7 +46,7 @@ public class ProductService {
      * Globally available products can only be added by ADMIN
      *
      * @param productDto - product details
-     * @return added product info
+     * @return added product details
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
@@ -50,16 +57,18 @@ public class ProductService {
 
         ProductDto savedDto = ProductMapper.mapProductToProductDto(savedProduct);
 
-        productCreatedEvent(savedDto);
+        OutboxEvent outboxEvent = createOutboxEventForProductCreatedEvent(savedDto);
+
+        outboxEventRepository.save(outboxEvent);
 
         return savedDto;
     }
 
     /**
-     * Authenticated users can add custom products just for their use
+     * Authenticated users can add custom products just for their own use
      *
      * @param productDto - product details
-     * @return added product info
+     * @return added product details
      */
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -78,17 +87,23 @@ public class ProductService {
 
         ProductDto savedDto = ProductMapper.mapProductToProductDto(savedProduct);
 
-        productCreatedEvent(productDto);
+        OutboxEvent outboxEvent = createOutboxEventForProductCreatedEvent(savedDto);
+
+        outboxEventRepository.save(outboxEvent);
 
         return savedDto;
     }
 
+    /*
+        Caching only if product is global
+     */
     @Cacheable(value = "product", key = "#productId", unless = "#result.ownerUsername != null")
     public ProductDto findProductById(Long productId) {
         Product product = fetchProductById(productId);
 
-        if (product.getOwnerUsername() == null)
+        if (product.getOwnerUsername() == null) {
             return ProductMapper.mapProductToProductDto(product);                                       // anyone can fetch global products
+        }
 
         String username = authenticationUtils.getAuthenticatedUserUsername();
 
@@ -145,11 +160,14 @@ public class ProductService {
 
         ProductDto savedDto = ProductMapper.mapProductToProductDto(updatedProduct);
 
-        productUpdateEvent(savedDto);
+        OutboxEvent outboxEventForUpdate = createOutboxEventForProductUpdatedEvent(productDto);
+
+        outboxEventRepository.save(outboxEventForUpdate);
 
         return savedDto;
     }
 
+    @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @CacheEvict(value = "product", key = "#productId")
     public void deleteProduct(Long productId) {
@@ -159,7 +177,9 @@ public class ProductService {
 
         productRepository.deleteById(productId);
 
-        productDeletedEvent(productId);
+        OutboxEvent outboxEvent = createOutboxEventForProductDeletedEvent(productId);
+
+        outboxEventRepository.save(outboxEvent);
     }
 
     private Product fetchProductById(Long productId) {
@@ -167,46 +187,51 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException(productId));
     }
 
-    private void productCreatedEvent(ProductDto productDto) {
-        log.info("Sending ProductCreated Event to product.created Exchange: {}", productDto);
-
-        ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(
-                productDto.getProductId(),
-                productDto.getName(),
-                productDto.getProductCategory().toString(),
-                productDto.getCalories(),
-                productDto.getProtein(),
-                productDto.getCarbs(),
-                productDto.getFat(),
-                productDto.getOwnerUsername()
+    private OutboxEvent createOutboxEventForProductCreatedEvent(ProductDto productDto) {
+        OutboxEvent outboxEvent = outboxEventFactory.create(new ProductCreatedEvent(
+                        productDto.getProductId(),
+                        productDto.getName(),
+                        productDto.getProductCategory().toString(),
+                        productDto.getCalories(),
+                        productDto.getProtein(),
+                        productDto.getCarbs(),
+                        productDto.getFat(),
+                        productDto.getOwnerUsername()
+                )
         );
 
-        boolean result = streamBridge.send("productCreated-out-0", productCreatedEvent);
-        log.info("ProductCreated Event sent successfully: {}", result);
+        log.info("outboxEvent created. Payload: {}", outboxEvent.getPayload());
+
+        return outboxEvent;
     }
 
-    private void productUpdateEvent(ProductDto productDto) {
-        log.info("Sending ProductUpdated Event to product.updated Exchange: {}", productDto);
-
-        ProductUpdatedEvent productUpdatedEvent = new ProductUpdatedEvent(
-                productDto.getProductId(),
-                productDto.getName(),
-                productDto.getProductCategory().toString(),
-                productDto.getCalories(),
-                productDto.getProtein(),
-                productDto.getCarbs(),
-                productDto.getFat(),
-                productDto.getOwnerUsername()
+    private OutboxEvent createOutboxEventForProductUpdatedEvent(ProductDto productDto) {
+        OutboxEvent outboxEvent = outboxEventFactory.create(
+                new ProductUpdatedEvent(
+                        productDto.getProductId(),
+                        productDto.getName(),
+                        productDto.getProductCategory().toString(),
+                        productDto.getCalories(),
+                        productDto.getProtein(),
+                        productDto.getCarbs(),
+                        productDto.getFat(),
+                        productDto.getOwnerUsername()
+                )
         );
 
-        boolean result = streamBridge.send("productUpdated-out-0", productUpdatedEvent);
-        log.info("ProductUpdated Event sent successfully: {}", result);
+        log.info("outboxEvent created. Payload: {}", outboxEvent.getPayload());
+
+        return outboxEvent;
     }
 
-    private void productDeletedEvent(Long productId) {
-        log.info("Sending ProductDeleted Event to product.deleted Exchange: {}", productId);
-        boolean result = streamBridge.send("productDeleted-out-0", productId);
-        log.info("ProductDeleted Event sent successfully: {}", result);
+    private OutboxEvent createOutboxEventForProductDeletedEvent(Long productId) {
+        OutboxEvent outboxEvent = outboxEventFactory.create(
+                new ProductDeletedEvent(productId)
+        );
+
+        log.info("outboxEvent created. Payload: {}", outboxEvent.getPayload());
+
+        return outboxEvent;
     }
 
     // returns true if user has less than 100 custom products added

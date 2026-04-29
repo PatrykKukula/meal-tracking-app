@@ -3,7 +3,6 @@ package io.github.patrykkukula.product_ms.security;
 import io.github.patrykkukula.mealtrackingapp_common.exception.AccessDeniedHandlerImpl;
 import io.github.patrykkukula.mealtrackingapp_common.exception.AuthenticationEntryPointImpl;
 import io.github.patrykkukula.mealtrackingapp_common.security.KeycloakRealmRolesConverter;
-import io.github.patrykkukula.product_ms.filter.CorrelationIdFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
