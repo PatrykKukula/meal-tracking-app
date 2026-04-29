@@ -1,6 +1,5 @@
 package io.github.patrykkukula.product_ms.service;
 
-import io.github.patrykkukula.mealtrackingapp_common.events.EventBindingConfig;
 import io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus;
 import io.github.patrykkukula.mealtrackingapp_common.events.ProductEventSender;
 import io.github.patrykkukula.mealtrackingapp_common.events.product.BasicProductEvent;
@@ -37,6 +36,8 @@ public class OutboxEventService {
         repository.getUnsentEvents(PageRequest.of(0, 100, Sort.by("createdAt").ascending()))
                 .forEach(event -> {
                     BasicProductEvent productEvent = eventFactory.createEvent(event);
+                    log.info("Attempt to send event. Event type: {}, payload: {}", event.getEventType(),
+                            event.getPayload());
 
                     try {
                         eventSender.sendEvent(productEvent);

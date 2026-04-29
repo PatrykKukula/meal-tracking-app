@@ -37,6 +37,8 @@ public class OutboxEventService {
         repository.getUnsentEvents(PageRequest.of(0, 100, Sort.by("createdAt").ascending()))
                 .forEach(event -> {
                     BasicProductEvent productEvent = eventFactory.createEvent(event);
+                    log.info("Attempt to send event. Event type: {}, payload: {}", event.getEventType(),
+                            event.getPayload());
 
                     try {
                         eventSender.sendEvent(productEvent);
