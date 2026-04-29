@@ -56,8 +56,8 @@ public class OutboxEventService {
                     } finally {
                         repository.save(event);
                     }
-                    log.info("Events send: {}", count.intValue());
                 });
+        log.info("Events send: {}", count.intValue());
     }
 
     /*
