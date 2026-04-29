@@ -6,6 +6,7 @@ import io.github.patrykkukula.mealtrackingapp_common.events.EventBindingConfig;
 import io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus;
 import io.github.patrykkukula.mealtrackingapp_common.events.ProductEventSender;
 import io.github.patrykkukula.mealtrackingapp_common.events.product.BasicProductEvent;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +28,12 @@ public class OutboxEventService {
     /*
         Method for sending events in fixed rate in Outbox pattern
      */
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 30000)
     public void sendEvents() {
+        log.info("Invoking sendEvents() in product_ms");
+
+        AtomicInteger count = new AtomicInteger();
+
         repository.getUnsentEvents(PageRequest.of(0, 100, Sort.by("createdAt").ascending()))
                 .forEach(event -> {
                     BasicProductEvent productEvent = eventFactory.createEvent(event);
@@ -36,8 +42,7 @@ public class OutboxEventService {
                         eventSender.sendEvent(productEvent);
                         event.setStatus(OutboxEventStatus.SENT);
                         event.setSentAt(LocalDateTime.now());
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         log.warn("Failed to send event: {}", event.getOutboxEventId(), ex);
                         if (event.getRetryCount() >= 5) {
                             log.warn("Retry count limit exceed. Mark event DEAD");
@@ -47,15 +52,23 @@ public class OutboxEventService {
                             event.setStatus(OutboxEventStatus.FAILED);
                             event.setRetryCount(event.getRetryCount()+1);
                         }
+                    } finally {
+                        repository.save(event);
                     }
+                    log.info("Events send: {}", count.intValue());
                 });
     }
 
     /*
         Method to remove sent or dead events
      */
-    @Scheduled(cron = "0 0 3 * * *")
+    @Transactional
+    @Scheduled(cron = "0 * * * * MON-FRI")
     public void removeEvents() {
-        repository.deleteSentEvents();
+        log.info("Invoking removeEvents() in product_ms");
+
+        int removed = repository.deleteSentEvents();
+
+        log.info("Removed events: {}", removed);
     }
 }
