@@ -7,6 +7,6 @@ app:
     product.added.to.meal: productAddedToMeal-in-0
     product.removed.from.meal: productRemovedFromMeal-in-0
     product.updated.in.meal: productUpdatedInMeal-in-0
-    product.created: productCreated-in-0
+    product.added: productCreated-in-0
     product.updated: productUpdated-in-0
     product.deleted: productDeleted-in-0

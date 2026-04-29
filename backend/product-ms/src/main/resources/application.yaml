@@ -85,3 +85,12 @@ logging:
         security: TRACE
   pattern:
     console: "%d{HH:mm:ss} [correlation-id:%X{correlation-id}] %-5level %logger - %msg%n"
+
+app:
+  bindings:
+    product.added.to.meal: productAddedToMeal-out-0
+    product.removed.from.meal: productRemovedFromMeal-out-0
+    product.updated.in.meal: productUpdatedInMeal-out-0
+    product.added: productCreated-out-0
+    product.updated: productUpdated-out-0
+    product.deleted: productDeleted-out-0
