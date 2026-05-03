@@ -26,7 +26,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto productDto, HttpServletRequest request) {
-        log.info("Request coming: {} ms", System.currentTimeMillis());
         ProductDto addedProduct = productService.addProduct(productDto);
 
         return ResponseEntity.created(BasicUtils.setLocation(addedProduct.getProductId(), request)).body(addedProduct);
