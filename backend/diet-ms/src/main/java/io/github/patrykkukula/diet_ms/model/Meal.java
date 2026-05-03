@@ -18,7 +18,7 @@ public class Meal {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diet_day_id")
     private DietDay dietDay;
 
