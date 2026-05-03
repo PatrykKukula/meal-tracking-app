@@ -4,7 +4,7 @@ import io.github.patrykkukula.diet_ms.constants.ProductCategory;
 import io.github.patrykkukula.diet_ms.dto.ProductDtoRead;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
-import io.github.patrykkukula.mealtrackingapp_common.events.ProductUpdatedEvent;
+import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductUpdatedEvent;
 
 public class ProductSnapshotMapper {
     private ProductSnapshotMapper(){}
