@@ -14,14 +14,14 @@ public class ProductQuantity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productQuantityId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", nullable = false)
     private ProductSnapshot productSnapshot;
 
     @Column(nullable = false)
     private Double quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mealId", nullable = false)
     private Meal meal;
 
