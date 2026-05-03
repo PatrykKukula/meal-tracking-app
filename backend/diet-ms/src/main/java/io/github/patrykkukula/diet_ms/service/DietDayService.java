@@ -97,7 +97,7 @@ public class DietDayService {
 
         cacheUtils.evictMonthlyDietsCache(dietDay);
 
-        return dietDayAssembler.addMealToDietDay(mealDto, dietDay);
+        return dietDayAssembler.addMealToDietDay(mealDto, dietDay, dietDay.getOwnerUsername());
     }
 
     /*
@@ -111,7 +111,7 @@ public class DietDayService {
                     return new MealDtoRead(meal.getMealId(), meal.getName(), products);
                 })
                 .toList();
-    };
+    }
 
     // check if DietDay belongs to user
     private void isResourceOwner(DietDay dietDay) {

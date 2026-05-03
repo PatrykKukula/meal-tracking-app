@@ -21,12 +21,16 @@ spring:
           issuer-uri: http://localhost:7080/realms/MealTrackingApp
           jwk-set-uri: http://localhost:7080/realms/MealTrackingApp/protocol/openid-connect/certs
   cloud:
+    function:
+      definition: productAddedToMealEvent;productRemovedFromMealEvent;productUpdatedInMealEvent
     stream:
       bindings:
         productCreated-in-0:
           destination: product.created
         productDeleted-in-0:
           destination: product.deleted
+        productUpdated-in-0:
+          destination: product.updated
         productAddedToMeal-in-0:
           destination: product.added.to.meal
         productRemovedFromMeal-in-0:
