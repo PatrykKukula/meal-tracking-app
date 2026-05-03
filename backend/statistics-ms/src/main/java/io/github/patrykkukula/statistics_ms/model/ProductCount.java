@@ -21,22 +21,13 @@ public class ProductCount {
     public Long productId;
     @Column(nullable = false)
     public String username;
-//    @Enumerated(value = EnumType.STRING)
-//    @Column(nullable = false)
-//    public ProductCategory productCategory;
     @Column(nullable = false)
     public Integer usageCount;
     @Column(nullable = false)
     public Integer totalQuantity;
-    @Column(nullable = false)
-    public Double averageQuantity;
 
     public void setUsageCount(Integer count) {
         this.usageCount += count;
-    }
-
-    public void setAverageQuantity() {
-        this.averageQuantity = (double) totalQuantity / usageCount;
     }
 
     public void setTotalQuantity(Integer quantity) {
