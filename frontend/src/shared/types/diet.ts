@@ -48,6 +48,7 @@ export interface CalendarDay {
   isCurrentMonth: boolean;
   isToday: boolean;
   hasDiet: boolean;
+  dietDayId?: number;
   calories?: number;
   protein?: number;
   carbs?: number;

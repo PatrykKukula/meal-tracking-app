@@ -10,22 +10,24 @@ const MONTHS = [
 ];
 
 interface DietCalendarProps {
-  dietDays?: Map<string, { calories: number; protein: number; carbs: number; fat: number }>;
+  dietDays?: Map<string, { dietDayId: number; calories: number; protein: number; carbs: number; fat: number }>;
+  onMonthChange?: (year: number, month: number) => void;
 }
 
-const formatDateToISO = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-export const DietCalendar: React.FC<DietCalendarProps> = ({ dietDays = new Map() }) => {
+export const DietCalendar: React.FC<DietCalendarProps> = ({ dietDays = new Map(), onMonthChange }) => {
   const navigate = useNavigate();
   const today = new Date();
   
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+
+  // Utility function to format date to ISO string (YYYY-MM-DD)
+  const formatDateToISO = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   // Generate year options (current year ± 5 years)
   const yearOptions = useMemo(() => {
@@ -42,7 +44,6 @@ export const DietCalendar: React.FC<DietCalendarProps> = ({ dietDays = new Map()
     value: index.toString(),
     label: month
   }));
-
 
   // Generate calendar days for selected month/year
   const calendarDays = useMemo((): CalendarDay[] => {
@@ -111,10 +112,14 @@ export const DietCalendar: React.FC<DietCalendarProps> = ({ dietDays = new Map()
     return days;
   }, [selectedYear, selectedMonth, dietDays, today]);
 
-
   const handleDayClick = (day: CalendarDay) => {
-    // Navigate to add diet day page with the selected date
-    navigate(`/diets/add?date=${day.dateString}`);
+    // If day has diet, navigate to view page, otherwise to add page
+    const dietData = dietDays.get(day.dateString);
+    if (dietData?.dietDayId) {
+      navigate(`/diets/${dietData.dietDayId}`);
+    } else {
+      navigate(`/diets/add?date=${day.dateString}`);
+    }
   };
 
   return (
@@ -127,13 +132,21 @@ export const DietCalendar: React.FC<DietCalendarProps> = ({ dietDays = new Map()
         <div className="flex gap-3">
           <Select
             value={selectedMonth.toString()}
-            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            onChange={(e) => {
+              const newMonth = Number(e.target.value);
+              setSelectedMonth(newMonth);
+              onMonthChange?.(selectedYear, newMonth + 1);
+            }}
             options={monthOptions}
             className="w-36"
           />
           <Select
             value={selectedYear.toString()}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            onChange={(e) => {
+              const newYear = Number(e.target.value);
+              setSelectedYear(newYear);
+              onMonthChange?.(newYear, selectedMonth + 1);
+            }}
             options={yearOptions}
             className="w-28"
           />

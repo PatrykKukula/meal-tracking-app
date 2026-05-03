@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/backend/api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/backend/diet-ms/pom.xml" />
         <option value="$PROJECT_DIR$/backend/mealtrackingapp-common/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/statistics-ms/pom.xml" />
       </list>
     </option>
   </component>

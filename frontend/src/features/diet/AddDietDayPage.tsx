@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button, Input } from '@/shared/components';
+import { useAuthStore } from '@/shared/store/authStore';
 import { dietApi } from '@/shared/services/dietApi';
 import { DietDayDto, MealDto, ProductQuantityDto } from '@/shared/types';
 import { ProductSelectionDialog } from './ProductSelectionDialog';
@@ -16,8 +17,17 @@ interface MealFormData {
 export const AddDietDayPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuthStore();
   const [searchParams] = useSearchParams();
   const dateParam = searchParams.get('date');
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to create diet plans');
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
 
   const [selectedDate, setSelectedDate] = useState<string>(
     dateParam || new Date().toISOString().split('T')[0]
