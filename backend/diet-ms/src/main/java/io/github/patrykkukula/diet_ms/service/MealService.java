@@ -1,8 +1,10 @@
 package io.github.patrykkukula.diet_ms.service;
 
 import io.github.patrykkukula.diet_ms.assembler.DietDayAssembler;
+import io.github.patrykkukula.diet_ms.cache.CacheUtils;
 import io.github.patrykkukula.diet_ms.dto.ProductQuantityDto;
 import io.github.patrykkukula.diet_ms.exception.MealNotFoundException;
+import io.github.patrykkukula.diet_ms.factory.OutboxEventFactory;
 import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.Meal;
 import io.github.patrykkukula.diet_ms.repository.MealRepository;
@@ -19,6 +21,7 @@ public class MealService {
     private final MealRepository mealRepository;
     private final AuthenticationUtils authenticationUtils;
     private final DietDayAssembler dietDayAssembler;
+    private final CacheUtils cacheUtils;
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -28,7 +31,10 @@ public class MealService {
         isResourceOwner(meal);
 
         DietDay dietDay = meal.getDietDay();
+
         dietDay.removeMeal(meal);
+
+        cacheUtils.evictCaches(dietDay);
     }
 
     @Transactional
@@ -38,11 +44,13 @@ public class MealService {
 
         isResourceOwner(meal);
 
-        return dietDayAssembler.addProductQuantityToMeal(productQuantityDto, meal);
+        cacheUtils.evictCaches(meal.getDietDay());
+
+        return dietDayAssembler.addProductQuantityToMeal(productQuantityDto, meal, authenticationUtils.getAuthenticatedUserUsername());
     }
 
     private Meal fetchMeal(Long mealId) {
-        return mealRepository.findById(mealId).orElseThrow(() -> new MealNotFoundException(mealId));
+        return mealRepository.findByIdWithDietDay(mealId).orElseThrow(() -> new MealNotFoundException(mealId));
     }
 
     // check if Meal belongs to user
