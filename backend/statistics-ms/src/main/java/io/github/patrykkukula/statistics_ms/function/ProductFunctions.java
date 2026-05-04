@@ -16,8 +16,8 @@ public class ProductFunctions {
 
     public Consumer<ProductAddedToMealEvent> productAddedToMealEvent() {
         return event -> {
-            log.info("ProductAddedToMeal Event received in statistics_ms for product ID: {}", event.productId());
             statisticsService.addProductToProductCount(event);
+            log.info("ProductAddedToMeal Event received in statistics_ms for product ID: {}", event.productId());
         };
     }
 }
