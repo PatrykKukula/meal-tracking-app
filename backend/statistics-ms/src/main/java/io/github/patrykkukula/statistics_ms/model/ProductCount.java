@@ -13,24 +13,28 @@ import lombok.Setter;
 public class ProductCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long productCountId;
+    private Long productCountId;
 
     @Column(nullable = false)
-    public String productName;
+    private String productName;
     @Column(nullable = false)
-    public Long productId;
+    private Long productId;
     @Column(nullable = false)
-    public String username;
+    private String username;
     @Column(nullable = false)
-    public Integer usageCount;
+    private Integer usageCount = 0;
     @Column(nullable = false)
-    public Integer totalQuantity;
+    private Double totalQuantity = 0.0;
 
-    public void setUsageCount(Integer count) {
-        this.usageCount += count;
+    public void incrementUsageCount() {
+        this.usageCount += 1;
     }
 
-    public void setTotalQuantity(Integer quantity) {
+    public void decrementUsageCount() {
+        this.usageCount -= 1;
+    }
+
+    public void addTotalQuantity(Double quantity) {
         this.totalQuantity += quantity;
     }
 }
