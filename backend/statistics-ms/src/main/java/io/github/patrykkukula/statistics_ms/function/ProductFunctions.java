@@ -1,6 +1,7 @@
 package io.github.patrykkukula.statistics_ms.function;
 
 import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductAddedToMealEvent;
+import io.github.patrykkukula.statistics_ms.dto.ProductCountDto;
 import io.github.patrykkukula.statistics_ms.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +17,11 @@ public class ProductFunctions {
 
     public Consumer<ProductAddedToMealEvent> productAddedToMealEvent() {
         return event -> {
-            statisticsService.addProductToProductCount(event);
             log.info("ProductAddedToMeal Event received in statistics_ms for product ID: {}", event.productId());
+
+            ProductCountDto productCountDto = statisticsService.addProductToProductCount(event);
+
+            log.info("ProductCount updated successfully: {}", productCountDto);
         };
     }
 }
