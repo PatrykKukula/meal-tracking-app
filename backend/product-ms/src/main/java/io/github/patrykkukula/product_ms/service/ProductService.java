@@ -13,7 +13,7 @@ import io.github.patrykkukula.product_ms.model.OutboxEvent;
 import io.github.patrykkukula.product_ms.model.Product;
 import io.github.patrykkukula.product_ms.repository.OutboxEventRepository;
 import io.github.patrykkukula.product_ms.repository.ProductRepository;
-import io.github.patrykkukula.product_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.product_ms.security.AuthenticationUtilsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductService {
-    private final AuthenticationUtils authenticationUtils;
+    private final AuthenticationUtilsImpl authenticationUtilsImpl;
     private final ProductRepository productRepository;
     private final StreamBridge streamBridge;
     private final OutboxEventFactory outboxEventFactory;
@@ -75,7 +75,7 @@ public class ProductService {
     public ProductDto addCustomProduct(ProductDto productDto) {
         Product product = ProductMapper.mapProductDtoToProduct(productDto);
 
-        String username = authenticationUtils.getAuthenticatedUserUsername();
+        String username = authenticationUtilsImpl.getAuthenticatedUserUsername();
 
         if (!canUserAddCustomProduct(username)) {
             throw new CustomProductAmountExceededException();
@@ -105,7 +105,7 @@ public class ProductService {
             return ProductMapper.mapProductToProductDto(product);                                       // anyone can fetch global products
         }
 
-        String username = authenticationUtils.getAuthenticatedUserUsername();
+        String username = authenticationUtilsImpl.getAuthenticatedUserUsername();
 
         if (!Objects.equals(username, product.getOwnerUsername())) {                                    // only product owner can fetch product he added
             throw new AccessDeniedException("You do not have access to this product");
@@ -133,7 +133,7 @@ public class ProductService {
 
         // if user is authenticated additionally search for his custom products, else only search for global products
         try {
-            username = authenticationUtils.getAuthenticatedUserUsername();
+            username = authenticationUtilsImpl.getAuthenticatedUserUsername();
             log.info("Invoked findProducts with authenticated user: {}", username);
         } catch (AccessDeniedException ex) {
             log.info("Invoked findProducts with no authentication. Username set to null");
@@ -154,7 +154,7 @@ public class ProductService {
 
         Product updatedProduct;
 
-        boolean allowed = authenticationUtils.canUserModifyProduct(product);
+        boolean allowed = authenticationUtilsImpl.canUserModifyProduct(product);
 
         updatedProduct = ProductMapper.mapProductDtoToProductUpdate(productDto, product);
 
@@ -173,7 +173,7 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         Product product = fetchProductById(productId);
 
-        boolean allowed = authenticationUtils.canUserModifyProduct(product);
+        boolean allowed = authenticationUtilsImpl.canUserModifyProduct(product);
 
         productRepository.deleteById(productId);
 

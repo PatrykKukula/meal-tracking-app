@@ -1,4 +1,4 @@
-package io.github.patrykkukula.diet_ms.security;
+package io.github.patrykkukula.mealtrackingapp_common.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -7,13 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-/**
- * Utility class for Authentication related actions
- */
 @Component
 @Slf4j
 public class AuthenticationUtils {
-
     // Returns JwtAuthenticationToken for authorization purposes
     public JwtAuthenticationToken getJwtAuthenticationToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

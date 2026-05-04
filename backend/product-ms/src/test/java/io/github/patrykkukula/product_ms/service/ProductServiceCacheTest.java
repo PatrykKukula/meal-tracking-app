@@ -4,7 +4,7 @@ import io.github.patrykkukula.product_ms.constants.ProductCategory;
 import io.github.patrykkukula.product_ms.dto.ProductDto;
 import io.github.patrykkukula.product_ms.model.Product;
 import io.github.patrykkukula.product_ms.repository.ProductRepository;
-import io.github.patrykkukula.product_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.product_ms.security.AuthenticationUtilsImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 public class ProductServiceCacheTest {
     @MockitoBean
-    private AuthenticationUtils authenticationUtils;
+    private AuthenticationUtilsImpl authenticationUtilsImpl;
     @MockitoBean
     private StreamBridge streamBridge;
     @MockitoBean
@@ -88,7 +88,7 @@ public class ProductServiceCacheTest {
     public void shouldEvictCacheCorrectlyWhenUpdateProduct() {
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
         when(productRepository.save(any(Product.class))).thenReturn(product);
-        when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("admin");
+        when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("admin");
 
         assertNull(cache.get(product.getProductId()));
 
@@ -110,7 +110,7 @@ public class ProductServiceCacheTest {
     @WithMockUser(roles = "ADMIN", username = "admin")                                                // not testing security here so no JWT
     public void shouldEvictCacheCorrectlyWhenDeleteProduct() {
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-        when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("admin");
+        when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("admin");
 
         assertNull(cache.get(1L));
 

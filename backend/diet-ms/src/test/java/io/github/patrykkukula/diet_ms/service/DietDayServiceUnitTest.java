@@ -8,7 +8,7 @@ import io.github.patrykkukula.diet_ms.exception.DietDayNotFoundException;
 import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.Meal;
 import io.github.patrykkukula.diet_ms.repository.DietDayRepository;
-import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.mealtrackingapp_common.security.AuthenticationUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

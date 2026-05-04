@@ -9,7 +9,7 @@ import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.Meal;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
 import io.github.patrykkukula.diet_ms.repository.ProductQuantityRepository;
-import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.mealtrackingapp_common.security.AuthenticationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

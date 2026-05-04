@@ -10,8 +10,8 @@ import io.github.patrykkukula.diet_ms.mapper.ProductQuantityMapper;
 import io.github.patrykkukula.diet_ms.model.*;
 import io.github.patrykkukula.diet_ms.repository.OutboxEventRepository;
 import io.github.patrykkukula.diet_ms.repository.ProductSnapshotRepository;
-import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
 import io.github.patrykkukula.mealtrackingapp_common.events.product.ProductAddedToMealEvent;
+import io.github.patrykkukula.mealtrackingapp_common.security.AuthenticationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

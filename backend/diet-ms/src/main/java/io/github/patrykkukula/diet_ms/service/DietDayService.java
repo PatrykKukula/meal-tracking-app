@@ -6,7 +6,7 @@ import io.github.patrykkukula.diet_ms.dto.*;
 import io.github.patrykkukula.diet_ms.exception.DietDayNotFoundException;
 import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.repository.DietDayRepository;
-import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.mealtrackingapp_common.security.AuthenticationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,7 +24,7 @@ public class DietDayService {
     private final DietDayRepository dietDayRepository;
     private final ProductSnapshotService productSnapshotService;
     private final DietDayAssembler dietDayAssembler;
-    private final AuthenticationUtils authenticationUtils;
+    private final AuthenticationUtils authenticationUtilsImpl;
     private final CacheUtils cacheUtils;
 
     @Transactional
@@ -61,7 +61,7 @@ public class DietDayService {
         if (year <= 2021 || year >= LocalDate.now().getYear() + 5) {
             throw new IllegalArgumentException("Year must be at least 2021 and cannot be more than current year plus 5 years");
         }
-        String username = authenticationUtils.getAuthenticatedUserUsername();
+        String username = authenticationUtilsImpl.getAuthenticatedUserUsername();
 
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.plusMonths(1);
@@ -115,7 +115,7 @@ public class DietDayService {
 
     // check if DietDay belongs to user
     private void isResourceOwner(DietDay dietDay) {
-        String username = authenticationUtils.getAuthenticatedUserUsername();
+        String username = authenticationUtilsImpl.getAuthenticatedUserUsername();
 
         if (!dietDay.getOwnerUsername().equals(username)) {
             throw new AccessDeniedException("Access denied");

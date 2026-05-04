@@ -10,7 +10,7 @@ import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.Meal;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
 import io.github.patrykkukula.diet_ms.repository.ProductQuantityRepository;
-import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.mealtrackingapp_common.security.AuthenticationUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

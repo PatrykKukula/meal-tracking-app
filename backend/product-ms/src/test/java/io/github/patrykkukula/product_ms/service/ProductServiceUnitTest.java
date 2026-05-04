@@ -6,7 +6,7 @@ import io.github.patrykkukula.product_ms.exception.CustomProductAmountExceededEx
 import io.github.patrykkukula.product_ms.exception.ProductNotFoundException;
 import io.github.patrykkukula.product_ms.model.Product;
 import io.github.patrykkukula.product_ms.repository.ProductRepository;
-import io.github.patrykkukula.product_ms.security.AuthenticationUtils;
+import io.github.patrykkukula.product_ms.security.AuthenticationUtilsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,7 +39,7 @@ public class ProductServiceUnitTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
-    private AuthenticationUtils authenticationUtils;
+    private AuthenticationUtilsImpl authenticationUtilsImpl;
     @Mock
     private StreamBridge streamBridge;
     @InjectMocks
@@ -99,7 +99,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should add custom product correctly")
         public void shouldAddCustomProductCorrectly() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
             when(productRepository.fetchCustomProductsAmountForUser(anyString())).thenReturn(1L);
             when(productRepository.save(any(Product.class))).thenReturn(product);
 
@@ -112,7 +112,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should set username correctly")
         public void shouldSetUsernameCorrectly() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
             when(productRepository.fetchCustomProductsAmountForUser(anyString())).thenReturn(1L);
             when(productRepository.save(any(Product.class))).thenReturn(product);
 
@@ -126,7 +126,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should throw AccessDeniedException when user is not authenticated")
         public void shouldThrowAccessDeniedExceptionWhenUserIsNotAuthenticated() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenThrow(AccessDeniedException.class);
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenThrow(AccessDeniedException.class);
 
             assertThrows(AccessDeniedException.class, () -> productService.addCustomProduct(productDto));
         }
@@ -134,7 +134,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should throw CustomProductAmountExceededException when custom product amount exceeded")
         public void shouldThrowCustomProductAmountExceededExceptionWhenCustomProductAmountExceeded() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
             when(productRepository.fetchCustomProductsAmountForUser(anyString())).thenReturn(101L);
 
             assertThrows(CustomProductAmountExceededException.class, () -> productService.addCustomProduct(productDto));
@@ -153,7 +153,7 @@ public class ProductServiceUnitTest {
             ProductDto fetchedProduct = productService.findProductById(1L);
 
             assertEquals("product2", fetchedProduct.getName());
-            verifyNoInteractions(authenticationUtils);
+            verifyNoInteractions(authenticationUtilsImpl);
         }
 
         @Test
@@ -161,13 +161,13 @@ public class ProductServiceUnitTest {
         public void shouldFindProductByIdCorrectlyWithValidUsername() {
             product.setOwnerUsername("user");
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
 
             ProductDto fetchedProduct = productService.findProductById(1L);
 
             assertEquals("product2", fetchedProduct.getName());
             assertEquals("user", fetchedProduct.getOwnerUsername());
-            verify(authenticationUtils, times(1)).getAuthenticatedUserUsername();
+            verify(authenticationUtilsImpl, times(1)).getAuthenticatedUserUsername();
         }
 
         @Test
@@ -183,7 +183,7 @@ public class ProductServiceUnitTest {
         public void shouldThrowAccessDeniedExceptionWhenFindProductByIdAndUsernameDoesNotMatch() {
             product.setOwnerUsername("user");
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("other user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("other user");
 
             assertThrows(AccessDeniedException.class, () -> productService.findProductById(anyLong()));
         }
@@ -195,7 +195,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should find products correctly")
         public void shouldFindProductsCorrectly() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenThrow(AccessDeniedException.class);
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenThrow(AccessDeniedException.class);
             when(productRepository.searchProducts(any(), any(), any(), any()))
                     .thenReturn(new PageImpl<>(List.of(product, product2)));
 
@@ -209,7 +209,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should pass correct parameter when no authentication")
         public void shouldPassCorrectParametersWhenNoAuthentication() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenThrow(AccessDeniedException.class);
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenThrow(AccessDeniedException.class);
             when(productRepository.searchProducts(any(), any(), any(), any())).thenReturn(Page.empty());
 
             List<ProductDto> products = productService.findProducts(1, null, "");
@@ -224,7 +224,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should pass correct parameters to with authentication")
         public void shouldPassCorrectParametersWithAuthentication() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
             when(productRepository.searchProducts(any(), any(), any(), any())).thenReturn(Page.empty());
 
             List<ProductDto> products = productService.findProducts(1, ProductCategory.CEREAL, "");
@@ -239,7 +239,7 @@ public class ProductServiceUnitTest {
         @Test
         @DisplayName("Should create correct pageable")
         public void shouldCreateCorrectPageable() {
-            when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+            when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
             when(productRepository.searchProducts(any(), any(), any(), any())).thenReturn(Page.empty());
 
             List<ProductDto> products = productService.findProducts(1, null, "");
@@ -273,7 +273,7 @@ public class ProductServiceUnitTest {
         @DisplayName("Should update product correctly")
         public void shouldUpdateProductCorrectly(){
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            when(authenticationUtils.canUserModifyProduct(any(Product.class))).thenReturn(true);
+            when(authenticationUtilsImpl.canUserModifyProduct(any(Product.class))).thenReturn(true);
 
             ProductDto updatedProduct = productService.updateProduct(productDto, 1L);
 
@@ -285,7 +285,7 @@ public class ProductServiceUnitTest {
         @DisplayName("Should throw AccessDeniedException when user cannot modify")
         public void shouldThrowAccessDeniedExceptionWhenUserCannotModify(){
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            when(authenticationUtils.canUserModifyProduct(any(Product.class))).thenThrow(AccessDeniedException.class);
+            when(authenticationUtilsImpl.canUserModifyProduct(any(Product.class))).thenThrow(AccessDeniedException.class);
 
             assertThrows(AccessDeniedException.class, () -> productService.updateProduct(productDto, 1L));
         }
@@ -298,7 +298,7 @@ public class ProductServiceUnitTest {
         @DisplayName("Should delete product correctly")
         public void shouldDeleteProductCorrectly(){
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            when(authenticationUtils.canUserModifyProduct(any(Product.class))).thenReturn(true);
+            when(authenticationUtilsImpl.canUserModifyProduct(any(Product.class))).thenReturn(true);
             doNothing().when(productRepository).deleteById(anyLong());
 
             productService.deleteProduct(1L);
@@ -310,7 +310,7 @@ public class ProductServiceUnitTest {
         @DisplayName("Should throw AccessDeniedException when user cannot modify")
         public void shouldThrowAccessDeniedExceptionWhenUserCannotModify(){
             when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-            when(authenticationUtils.canUserModifyProduct(any(Product.class))).thenThrow(AccessDeniedException.class);
+            when(authenticationUtilsImpl.canUserModifyProduct(any(Product.class))).thenThrow(AccessDeniedException.class);
 
             assertThrows(AccessDeniedException.class, () -> productService.updateProduct(productDto, 1L));
             verify(productRepository, times(0)).deleteById(1L);

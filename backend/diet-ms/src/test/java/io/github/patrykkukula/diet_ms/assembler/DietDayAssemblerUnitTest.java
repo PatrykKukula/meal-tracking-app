@@ -11,7 +11,6 @@ import io.github.patrykkukula.diet_ms.model.DietDay;
 import io.github.patrykkukula.diet_ms.model.ProductQuantity;
 import io.github.patrykkukula.diet_ms.model.ProductSnapshot;
 import io.github.patrykkukula.diet_ms.repository.ProductSnapshotRepository;
-import io.github.patrykkukula.diet_ms.security.AuthenticationUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ public class DietDayAssemblerUnitTest {
     @Mock
     private ProductSnapshotRepository productSnapshotRepository;
     @Mock
-    private AuthenticationUtils authenticationUtils;
+    private AuthenticationUtilsImpl authenticationUtilsImpl;
     @InjectMocks
     private DietDayAssembler dietDayAssembler;
 
@@ -60,7 +59,7 @@ public class DietDayAssemblerUnitTest {
     @Test
     @DisplayName("should assemble DietDay correctly")
     public void shouldAssembleDietDayCorrectly() {
-        when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+        when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
         when(productSnapshotRepository.findById(anyLong())).thenReturn(Optional.of(productSnapshot));
 
         DietDay assembled = dietDayAssembler.assemble(dietDayDto);
@@ -73,7 +72,7 @@ public class DietDayAssemblerUnitTest {
     @Test
     @DisplayName("should create Meal correctly when assemble diet day")
     public void shouldCreateMealCorrectlyWhenAssembleDietDay() {
-        when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+        when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
         when(productSnapshotRepository.findById(anyLong())).thenReturn(Optional.of(productSnapshot));
 
         DietDay assembled = dietDayAssembler.assemble(dietDayDto);
@@ -87,7 +86,7 @@ public class DietDayAssemblerUnitTest {
     @Test
     @DisplayName("should create ProductQuantity correctly when assemble diet day")
     public void shouldCreateProductQuantityCorrectlyWhenAssembleDietDay() {
-        when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+        when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
         when(productSnapshotRepository.findById(anyLong())).thenReturn(Optional.of(productSnapshot));
 
         DietDay assembled = dietDayAssembler.assemble(dietDayDto);
@@ -102,7 +101,7 @@ public class DietDayAssemblerUnitTest {
     @DisplayName("should set Meal name correctly when assemble diet day with no meal proviced")
     public void shouldSetMealNameCorrectlyWhenAssembleDietDayWithNoMealNameProvided() {
         mealDto.setName(null);
-        when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
+        when(authenticationUtilsImpl.getAuthenticatedUserUsername()).thenReturn("user");
         when(productSnapshotRepository.findById(anyLong())).thenReturn(Optional.of(productSnapshot));
 
         DietDay assembled = dietDayAssembler.assemble(dietDayDto);

@@ -22,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationUtilsTest {
+public class AuthenticationUtilsImplTest {
     @Mock
     private SecurityContext securityContext;
     @InjectMocks
-    private AuthenticationUtils authenticationUtils;
+    private AuthenticationUtilsImpl authenticationUtilsImpl;
 
     private Authentication authentication;
     private Jwt jwt;
@@ -57,7 +57,7 @@ public class AuthenticationUtilsTest {
         public void shouldGetJwtAuthenticationTokenCorrectly() {
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            JwtAuthenticationToken token = authenticationUtils.getJwtAuthenticationToken();
+            JwtAuthenticationToken token = authenticationUtilsImpl.getJwtAuthenticationToken();
 
             assertNotNull(token);
             assertEquals(jwt, token.getToken());
@@ -70,7 +70,7 @@ public class AuthenticationUtilsTest {
                     new Object(), new Object())
             );
 
-            assertThrows(AccessDeniedException.class, () -> authenticationUtils.getJwtAuthenticationToken());
+            assertThrows(AccessDeniedException.class, () -> authenticationUtilsImpl.getJwtAuthenticationToken());
         }
     }
 
@@ -82,7 +82,7 @@ public class AuthenticationUtilsTest {
         public void shouldGetUsernameCorrectly() {
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            String username = authenticationUtils.getAuthenticatedUserUsername();
+            String username = authenticationUtilsImpl.getAuthenticatedUserUsername();
 
             assertEquals("admin", username);
         }
@@ -96,7 +96,7 @@ public class AuthenticationUtilsTest {
         public void shouldReturnTrueIfUserIsAdmin() {
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            boolean isAdmin = authenticationUtils.isAdmin();
+            boolean isAdmin = authenticationUtilsImpl.isAdmin();
 
             assertTrue(isAdmin);
         }
@@ -108,7 +108,7 @@ public class AuthenticationUtilsTest {
 
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            boolean isAdmin = authenticationUtils.isAdmin();
+            boolean isAdmin = authenticationUtilsImpl.isAdmin();
 
             assertFalse(isAdmin);
         }
@@ -122,7 +122,7 @@ public class AuthenticationUtilsTest {
         public void shouldReturnTrueForPublicProductWithRoleAdmin() {
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            boolean canModify = authenticationUtils.canUserModifyProduct(Product.builder().build());
+            boolean canModify = authenticationUtilsImpl.canUserModifyProduct(Product.builder().build());
 
             assertTrue(canModify);
         }
@@ -134,7 +134,7 @@ public class AuthenticationUtilsTest {
 
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            assertThrows(AccessDeniedException.class, () -> authenticationUtils.canUserModifyProduct(Product.builder().build()));
+            assertThrows(AccessDeniedException.class, () -> authenticationUtilsImpl.canUserModifyProduct(Product.builder().build()));
         }
 
         @Test
@@ -142,7 +142,7 @@ public class AuthenticationUtilsTest {
         public void shouldReturnTrueForPrivateProductWithRoleUser() {
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            boolean canModify = authenticationUtils.canUserModifyProduct(Product.builder().ownerUsername("admin").build());
+            boolean canModify = authenticationUtilsImpl.canUserModifyProduct(Product.builder().ownerUsername("admin").build());
 
             assertTrue(canModify);
         }
@@ -152,7 +152,7 @@ public class AuthenticationUtilsTest {
         public void shouldThrowAccessDeniedExceptionWhenCanUserModifyProductWithRoleUserAndProductHaveDifferentOwner() {
             when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            assertThrows(AccessDeniedException.class, () -> authenticationUtils.canUserModifyProduct(Product.builder().ownerUsername("different").build()));
+            assertThrows(AccessDeniedException.class, () -> authenticationUtilsImpl.canUserModifyProduct(Product.builder().ownerUsername("different").build()));
         }
     }
 
