@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductCountRepository extends JpaRepository<ProductCount, Long> {
-
     public Optional<ProductCount> findByProductIdAndUsername(Long productId, String username);
 
     @Query("SELECT pc FROM ProductCount pc WHERE pc.username =  :username")
