@@ -44,6 +44,7 @@ public class OutboxEventService {
                         eventSender.sendEvent(productEvent);
                         event.setStatus(OutboxEventStatus.SENT);
                         event.setSentAt(LocalDateTime.now());
+                        count.incrementAndGet();
                     } catch (Exception ex) {
                         log.warn("Failed to send event: {}", event.getOutboxEventId(), ex);
                         if (event.getRetryCount() >= 5) {
@@ -58,6 +59,7 @@ public class OutboxEventService {
                         repository.save(event);
                     }
                 });
+
         log.info("Events send: {}", count.intValue());
     }
 
@@ -65,7 +67,7 @@ public class OutboxEventService {
         Method to remove sent or dead events
      */
     @Transactional
-    @Scheduled(cron = "0 * * * * MON-FRI")
+    @Scheduled(cron = "0 * * * * MON-SUN")
     public void removeEvents() {
         log.info("Invoking removeEvents() in product_ms");
 
