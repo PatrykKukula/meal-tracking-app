@@ -35,6 +35,7 @@ public class DietDay {
 
     public void removeMeal(Meal meal) {
         meals.remove(meal);
+        meal.setDietDay(null);
     }
 
     public static DietDay fromDto(DietDayDto dto) {
