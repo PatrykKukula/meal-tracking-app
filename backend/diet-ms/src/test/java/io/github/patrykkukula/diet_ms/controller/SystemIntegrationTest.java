@@ -214,7 +214,7 @@ public class SystemIntegrationTest {
     }
 
     @Test
-    @DisplayName("should createDietDay and then respond 403 when removeProductQuantity as other user")
+    @DisplayName("should createDietDay and then respond 403 when removeProductQuantityFromMeal as other user")
     public void shouldCreateDietDayAndThenRespond403WhenRemoveProductQuantityAsOtherUser() throws Exception {
         MvcResult mvcResult = performCreateDietDay();
 

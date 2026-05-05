@@ -55,7 +55,7 @@ public class ProductQuantityServiceUnitTest {
     }
 
     @Nested
-    @DisplayName("when removeProductQuantity")
+    @DisplayName("when removeProductQuantityFromMeal")
     class whenRemoveProductQuantity {
         @Test
         @DisplayName("should remove ProductQuantity correctly")
@@ -63,7 +63,7 @@ public class ProductQuantityServiceUnitTest {
             when(productQuantityRepository.findById(anyLong())).thenReturn(Optional.of(productQuantity));
             when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
 
-            productQuantityService.removeProductQuantity(1L);
+            productQuantityService.removeProductQuantityFromMeal(1L);
 
             assertEquals(0, meal.getProductQuantities().size());
         }
@@ -73,19 +73,19 @@ public class ProductQuantityServiceUnitTest {
         public void shouldThrowProductQuantityExceptionWhenProductQuantityNotFound() {
             when(productQuantityRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-            assertThrows(ProductQuantityNotFoundException.class, () -> productQuantityService.removeProductQuantity(1L));
+            assertThrows(ProductQuantityNotFoundException.class, () -> productQuantityService.removeProductQuantityFromMeal(1L));
         }
         @Test
         @DisplayName("should throw AccessDeniedException when User is not owner")
         public void shouldThrowAccessDeniedExceptionWhenUserIsNotOwner() {
             when(productQuantityRepository.findById(anyLong())).thenReturn(Optional.of(productQuantity));
 
-            assertThrows(AccessDeniedException.class, () -> productQuantityService.removeProductQuantity(1L));
+            assertThrows(AccessDeniedException.class, () -> productQuantityService.removeProductQuantityFromMeal(1L));
         }
     }
 
     @Nested
-    @DisplayName("when updateProductQuantity")
+    @DisplayName("when updateProductQuantityInMeal")
     class whenUpdateProductQuantity {
         @Test
         @DisplayName("should update ProductQuantity correctly")
@@ -93,7 +93,7 @@ public class ProductQuantityServiceUnitTest {
             when(productQuantityRepository.findById(anyLong())).thenReturn(Optional.of(productQuantity));
             when(authenticationUtils.getAuthenticatedUserUsername()).thenReturn("user");
 
-            ProductQuantityDto updateProduct = productQuantityService.updateProductQuantity(1L, dto);
+            ProductQuantityDto updateProduct = productQuantityService.updateProductQuantityInMeal(1L, dto);
 
             assertEquals(5.0, updateProduct.getQuantity());
         }
@@ -103,7 +103,7 @@ public class ProductQuantityServiceUnitTest {
         public void shouldThrowProductQuantityExceptionWhenProductQuantityNotFound() {
             when(productQuantityRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-            assertThrows(ProductQuantityNotFoundException.class, () -> productQuantityService.updateProductQuantity(1L, dto));
+            assertThrows(ProductQuantityNotFoundException.class, () -> productQuantityService.updateProductQuantityInMeal(1L, dto));
         }
 
         @Test
@@ -111,7 +111,7 @@ public class ProductQuantityServiceUnitTest {
         public void shouldThrowAccessDeniedExceptionWhenUserIsNotOwner() {
             when(productQuantityRepository.findById(anyLong())).thenReturn(Optional.of(productQuantity));
 
-            assertThrows(AccessDeniedException.class, () -> productQuantityService.updateProductQuantity(1L, dto));
+            assertThrows(AccessDeniedException.class, () -> productQuantityService.updateProductQuantityInMeal(1L, dto));
         }
     }
 }

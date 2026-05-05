@@ -19,7 +19,7 @@ public class ProductQuantityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeProductQuantity(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id){
-        productQuantityService.removeProductQuantity(id);
+        productQuantityService.removeProductQuantityFromMeal(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -27,7 +27,7 @@ public class ProductQuantityController {
     @PatchMapping("/{id}")
     public ResponseEntity<ProductQuantityDto> updateProductQuantity(@PositiveOrZero(message = "Id cannot be less than 0") @PathVariable Long id,
                                                                     @Valid @RequestBody ProductQuantityDtoUpdate productQuantityDto) {
-        ProductQuantityDto updatedQuantity = productQuantityService.updateProductQuantity(id, productQuantityDto);
+        ProductQuantityDto updatedQuantity = productQuantityService.updateProductQuantityInMeal(id, productQuantityDto);
 
         return ResponseEntity.accepted().body(updatedQuantity);
     }

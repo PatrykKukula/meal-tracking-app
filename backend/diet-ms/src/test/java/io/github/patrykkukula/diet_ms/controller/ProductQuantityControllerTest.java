@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.ValueMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -71,7 +70,7 @@ public class ProductQuantityControllerTest {
                                 .with(jwtAdmin))
                         .andExpect(status().isNoContent());
 
-                verify(productQuantityService, times(1)).removeProductQuantity(anyLong());
+                verify(productQuantityService, times(1)).removeProductQuantityFromMeal(anyLong());
             }
         }
 
@@ -85,7 +84,7 @@ public class ProductQuantityControllerTest {
                                 .with(jwtUser))
                         .andExpect(status().isNoContent());
 
-                verify(productQuantityService, times(1)).removeProductQuantity(anyLong());
+                verify(productQuantityService, times(1)).removeProductQuantityFromMeal(anyLong());
             }
         }
 
@@ -159,24 +158,24 @@ public class ProductQuantityControllerTest {
     }
 
     @Nested
-    @DisplayName("when removeProductQuantity")
+    @DisplayName("when removeProductQuantityFromMeal")
     class whenRemoveProductQuantity {
         @Test
-        @DisplayName("should removeProductQuantity correctly")
+        @DisplayName("should removeProductQuantityFromMeal correctly")
         public void shouldRemoveProductQuantityCorrectly() throws Exception {
-            doNothing().when(productQuantityService).removeProductQuantity(anyLong());
+            doNothing().when(productQuantityService).removeProductQuantityFromMeal(anyLong());
 
             mockMvc.perform(delete(BASER_URL + "/{id}", 1)
                             .with(jwtAdmin))
                     .andExpect(status().isNoContent());
 
-            verify(productQuantityService, times(1)).removeProductQuantity(anyLong());
+            verify(productQuantityService, times(1)).removeProductQuantityFromMeal(anyLong());
         }
 
         @Test
         @DisplayName("should respond 404 when ProductQuantityNotFoundException is thrown")
         public void shouldRespond404WhenProductQuantityNotFoundExceptionIsThrown() throws Exception {
-            doThrow(new ProductQuantityNotFoundException(1L)).when(productQuantityService).removeProductQuantity(anyLong());
+            doThrow(new ProductQuantityNotFoundException(1L)).when(productQuantityService).removeProductQuantityFromMeal(anyLong());
 
             mockMvc.perform(delete(BASER_URL + "/{id}", 1)
                             .with(jwtAdmin))
@@ -186,13 +185,13 @@ public class ProductQuantityControllerTest {
                             jsonPath("$.message").value(Matchers.containsString("ProductQuantity with ID 1 not found"))
                     );
 
-            verify(productQuantityService, times(1)).removeProductQuantity(anyLong());
+            verify(productQuantityService, times(1)).removeProductQuantityFromMeal(anyLong());
         }
 
         @Test
         @DisplayName("should respond 403 when AccessDeniedException is thrown")
         public void shouldRespond400WhenAccessDeniedExceptionIsThrown() throws Exception {
-            doThrow(new AccessDeniedException("")).when(productQuantityService).removeProductQuantity(anyLong());
+            doThrow(new AccessDeniedException("")).when(productQuantityService).removeProductQuantityFromMeal(anyLong());
 
             mockMvc.perform(delete(BASER_URL + "/{id}", 1)
                             .with(jwtAdmin))
@@ -201,16 +200,16 @@ public class ProductQuantityControllerTest {
                             jsonPath("$.statusCode").value(403)
                     );
 
-            verify(productQuantityService, times(1)).removeProductQuantity(anyLong());
+            verify(productQuantityService, times(1)).removeProductQuantityFromMeal(anyLong());
         }
 
         @Nested
-        @DisplayName("when updateProductQuantity")
+        @DisplayName("when updateProductQuantityInMeal")
         class whenUpdateProductQuantity {
             @Test
-            @DisplayName("should updateProductQuantity correctly")
+            @DisplayName("should updateProductQuantityInMeal correctly")
             public void shouldUpdateProductQuantityCorrectly() throws Exception {
-                when(productQuantityService.updateProductQuantity(anyLong(), any(ProductQuantityDtoUpdate.class))).thenReturn(productQuantityDto);
+                when(productQuantityService.updateProductQuantityInMeal(anyLong(), any(ProductQuantityDtoUpdate.class))).thenReturn(productQuantityDto);
 
                 mockMvc.perform(patch(BASER_URL + "/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -221,13 +220,13 @@ public class ProductQuantityControllerTest {
                                 jsonPath("$.quantity").value(5.0)
                         );
 
-                verify(productQuantityService, times(1)).updateProductQuantity(anyLong(), any(ProductQuantityDtoUpdate.class));
+                verify(productQuantityService, times(1)).updateProductQuantityInMeal(anyLong(), any(ProductQuantityDtoUpdate.class));
             }
 
             @Test
             @DisplayName("should respond 404 when ProductQuantityNotFoundException is thrown")
             public void shouldRespond404WhenProductQuantityNotFoundExceptionIsThrown() throws Exception {
-                doThrow(new ProductQuantityNotFoundException(1L)).when(productQuantityService).updateProductQuantity(anyLong(), any(ProductQuantityDtoUpdate.class));
+                doThrow(new ProductQuantityNotFoundException(1L)).when(productQuantityService).updateProductQuantityInMeal(anyLong(), any(ProductQuantityDtoUpdate.class));
 
                 mockMvc.perform(patch(BASER_URL + "/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -239,13 +238,13 @@ public class ProductQuantityControllerTest {
                                 jsonPath("$.message").value(Matchers.containsString("ProductQuantity with ID 1 not found"))
                         );
 
-                verify(productQuantityService, times(1)).updateProductQuantity(anyLong(), any(ProductQuantityDtoUpdate.class));
+                verify(productQuantityService, times(1)).updateProductQuantityInMeal(anyLong(), any(ProductQuantityDtoUpdate.class));
             }
 
             @Test
             @DisplayName("should respond 403 when AccessDeniedException is thrown")
             public void shouldRespond400WhenAccessDeniedExceptionIsThrown() throws Exception {
-                doThrow(new AccessDeniedException("")).when(productQuantityService).updateProductQuantity(anyLong(), any(ProductQuantityDtoUpdate.class));
+                doThrow(new AccessDeniedException("")).when(productQuantityService).updateProductQuantityInMeal(anyLong(), any(ProductQuantityDtoUpdate.class));
 
                 mockMvc.perform(patch(BASER_URL + "/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -256,7 +255,7 @@ public class ProductQuantityControllerTest {
                                 jsonPath("$.statusCode").value(403)
                         );
 
-                verify(productQuantityService, times(1)).updateProductQuantity(anyLong(), any(ProductQuantityDtoUpdate.class));
+                verify(productQuantityService, times(1)).updateProductQuantityInMeal(anyLong(), any(ProductQuantityDtoUpdate.class));
             }
         }
     }
