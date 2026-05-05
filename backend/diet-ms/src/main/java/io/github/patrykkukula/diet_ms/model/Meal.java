@@ -35,6 +35,7 @@ public class Meal {
 
     public void removeProductQuantity(ProductQuantity productQuantity) {
         productQuantities.remove(productQuantity);
+        productQuantity.setMeal(null);
     }
 
     public static Meal fromDto(MealDto dto) {
