@@ -12,4 +12,12 @@ import java.util.List;
 public interface ProductQuantityRepository extends JpaRepository<ProductQuantity, Long> {
     @Query("SELECT q FROM ProductQuantity q JOIN q.meal m WHERE m.mealId= :mealId")
     public List<ProductQuantity> getProductQuantitiesForMeal(@Param(value = "mealId") Long mealId);
+
+    @Query("""
+            SELECT pq FROM ProductQuantity pq 
+            JOIN FETCH pq.meal m 
+            JOIN FETCH m.dietDay 
+            WHERE pq.quantityId = :quantityId
+            """)
+    public ProductQuantity findByIdWithMealAndDietDay(@Param(value = "quantityId") Long id);
 }
