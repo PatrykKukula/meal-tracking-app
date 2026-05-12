@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor @NoArgsConstructor
 public class OutboxEvent {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long outboxEventId;
+    private String eventId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)

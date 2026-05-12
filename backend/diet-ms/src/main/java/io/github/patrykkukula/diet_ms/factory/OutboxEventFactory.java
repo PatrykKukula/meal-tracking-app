@@ -18,11 +18,16 @@ import java.time.LocalDateTime;
 public class OutboxEventFactory {
     private final ObjectMapper objectMapper;
 
+    /**
+     *
+     * @param event - specific event instance
+     * @return OutboxEvent for specific EventType with status 'NEW' and random UUID eventId.
+     */
     public OutboxEvent create(BasicProductEvent event) {
         log.info("Creating OutboxEvent for routingKey: {}", event.routingKey());
         try {
             return new OutboxEvent(
-                    null,
+                    event.getEventId(),
                     OutboxEventStatus.NEW,
                     EventType.fromRoutingKey(event.routingKey()),
                     objectMapper.writeValueAsString(event),

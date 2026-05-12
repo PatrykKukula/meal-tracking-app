@@ -1,6 +1,7 @@
 package io.github.patrykkukula.mealtrackingapp_common.events.product;
 
-public record ProductUpdatedEvent(Long productId,
+public record ProductUpdatedEvent(String eventId,
+                                  Long productId,
                                   String name,
                                   String productCategory,
                                   Integer calories,
@@ -9,6 +10,11 @@ public record ProductUpdatedEvent(Long productId,
                                   Integer fat,
                                   String ownerUsername)
 implements BasicProductEvent {
+    @Override
+    public String getEventId() {
+        return this.eventId;
+    }
+
     @Override
     public String routingKey() {
         return "product.updated";
