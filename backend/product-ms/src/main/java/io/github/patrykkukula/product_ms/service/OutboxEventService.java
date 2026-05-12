@@ -43,11 +43,11 @@ public class OutboxEventService {
                         eventSender.sendEvent(productEvent);
                         event.setStatus(OutboxEventStatus.SENT);
                         event.setSentAt(LocalDateTime.now());
-
                         count.incrementAndGet();
                     } catch (Exception ex) {
-                        log.warn("Failed to send event: {}", event.getOutboxEventId(), ex);
+                        log.warn("Failed to send event: {}", event.getEventId(), ex);
                         if (event.getRetryCount() >= 5) {
+                            log.warn("Retry count limit exceed. Mark event DEAD");
                             event.setStatus(OutboxEventStatus.DEAD);                // mark dead if event failed to send too many times
                         }
                         else {
@@ -69,7 +69,9 @@ public class OutboxEventService {
     public void removeEvents() {
         log.info("Invoking removeEvents() in product_ms");
 
-        int removed = repository.deleteSentEvents();
+        LocalDateTime delay = LocalDateTime.now().minusHours(12);       //delay to prevent removing unsent events
+
+        int removed = repository.deleteSentEvents(delay);
 
         log.info("Removed events: {}", removed);
     }
