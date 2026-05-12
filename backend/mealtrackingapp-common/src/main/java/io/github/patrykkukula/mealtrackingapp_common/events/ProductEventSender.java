@@ -13,6 +13,7 @@ public class ProductEventSender {
     private final StreamBridge streamBridge;
     private final EventBindingConfig  eventBindingConfig;
 
+    // Send event to correct destination based on specific Event routingKey
     public void sendEvent(BasicProductEvent event) {
         String binding = eventBindingConfig.getBinding(event.routingKey());
 

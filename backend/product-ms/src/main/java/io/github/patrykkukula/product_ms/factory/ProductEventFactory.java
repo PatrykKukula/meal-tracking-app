@@ -19,7 +19,6 @@ public class ProductEventFactory {
                 return fromOutboxEvent(event);
         }
 
-
     /**
      *
      * @param event - OutboxEvent

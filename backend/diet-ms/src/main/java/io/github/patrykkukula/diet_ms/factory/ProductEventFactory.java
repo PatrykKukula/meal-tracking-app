@@ -19,6 +19,11 @@ public class ProductEventFactory {
                 return fromOutboxEvent(event);
         }
 
+    /**
+     *
+     * @param event - OutboxEvent
+     * @return specific Event
+     */
     private BasicProductEvent fromOutboxEvent(OutboxEvent event) {
         Class<? extends BasicProductEvent> eventClass = EventType.getClassFromRoutingKey(event.getEventType().getRoutingKey());
 
