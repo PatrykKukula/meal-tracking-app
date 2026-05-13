@@ -30,7 +30,7 @@ public class DietDayService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @CacheEvict(value = "monthlyDiets",
-            key = "#result.date.getYear() + '-' + #result.date.getMonthValue() + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
+            key = "#result.date.getYear() + '-' + #result.date.getMonthValue() + '-' + @authenticationUtilsImpl.getAuthenticatedUserUsername()")
     public DietDayDtoRead createDietDay(DietDayDto dietDayDto) {
         DietDay dietDay = dietDayAssembler.assemble(dietDayDto);
 
@@ -40,7 +40,7 @@ public class DietDayService {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @Cacheable(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
+    @Cacheable(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtilsImpl.getAuthenticatedUserUsername()")
     public DietDayDtoRead getDietDayById(Long dietDayId) {
         DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
@@ -56,7 +56,7 @@ public class DietDayService {
      * @return List of DietDayDtoRead
      */
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @Cacheable(value = "monthlyDiets", key = "#year + '-' + #month + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
+    @Cacheable(value = "monthlyDiets", key = "#year + '-' + #month + '-' + @authenticationUtilsImpl.getAuthenticatedUserUsername()")
     public List<DietDayDtoRead> getDietDayListForUserByGivenYearAndMonth(int year, int month) {
         if (year <= 2021 || year >= LocalDate.now().getYear() + 5) {
             throw new IllegalArgumentException("Year must be at least 2021 and cannot be more than current year plus 5 years");
@@ -76,7 +76,7 @@ public class DietDayService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @CacheEvict(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
+    @CacheEvict(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtilsImpl.getAuthenticatedUserUsername()")
     public void removeDietDay(Long dietDayId) {
         DietDay dietDay = dietDayRepository.fetchDietDay(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
@@ -89,7 +89,7 @@ public class DietDayService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @CacheEvict(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtils.getAuthenticatedUserUsername()")
+    @CacheEvict(value = "dietDay", key = "#dietDayId + '-' + @authenticationUtilsImpl.getAuthenticatedUserUsername()")
     public MealDto addMealToDietDay(Long dietDayId, MealDto mealDto) {
         DietDay dietDay = dietDayRepository.findById(dietDayId).orElseThrow(() -> new DietDayNotFoundException(dietDayId));
 
