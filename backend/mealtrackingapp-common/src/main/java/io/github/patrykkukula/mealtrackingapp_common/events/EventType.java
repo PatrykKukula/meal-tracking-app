@@ -20,6 +20,11 @@ public enum EventType {
     private final String routingKey;
     private final Class<? extends BasicProductEvent> eventClass;
 
+    /**
+     *
+     * @param routingKey of the Event
+     * @return EventType based on Event routingKey or throws exception if none found
+     */
     public static EventType fromRoutingKey(String routingKey) {
         return Arrays.stream(values())
                 .filter(val -> val.routingKey.equals(routingKey))
@@ -27,7 +32,11 @@ public enum EventType {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid routing key"));
     }
 
-    @Nullable
+    /**
+     *
+     * @param routingKey of the Event
+     * @return class of the Event based on Event routingKey or throws exception if none found
+     */
     public static Class<? extends BasicProductEvent> getClassFromRoutingKey(String routingKey) {
         return Arrays.stream(values())
                 .filter(val -> val.routingKey.equals(routingKey))
