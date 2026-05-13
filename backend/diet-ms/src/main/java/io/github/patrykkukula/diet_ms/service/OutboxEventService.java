@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static io.github.patrykkukula.mealtrackingapp_common.events.OutboxEventStatus.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -41,17 +43,17 @@ public class OutboxEventService {
 
                     try {
                         eventSender.sendEvent(productEvent);
-                        event.setStatus(OutboxEventStatus.SENT);
+                        event.setStatus(SENT);
                         event.setSentAt(LocalDateTime.now());
                         count.incrementAndGet();
                     } catch (Exception ex) {
                         log.warn("Failed to send event: {}", event.getEventId(), ex);
                         if (event.getRetryCount() >= 5) {
                             log.warn("Retry count limit exceed. Mark event DEAD");
-                            event.setStatus(OutboxEventStatus.DEAD);                // mark dead if event failed to send too many times
+                            event.setStatus(DEAD);                // mark dead if event failed to send too many times
                         }
                         else {
-                            event.setStatus(OutboxEventStatus.FAILED);
+                            event.setStatus(FAILED);
                             event.setRetryCount(event.getRetryCount()+1);
                         }
                     } finally {
@@ -71,7 +73,7 @@ public class OutboxEventService {
 
         LocalDateTime delay = LocalDateTime.now().minusHours(12);       //delay to prevent removing unsent events
 
-        int removed = repository.deleteSentEvents(delay);
+        int removed = repository.deleteSentEvents(delay, DEAD, SENT);
 
         log.info("Removed events: {}", removed);
     }
