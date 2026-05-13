@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductQuantityRepository extends JpaRepository<ProductQuantity, Long> {
@@ -19,5 +20,5 @@ public interface ProductQuantityRepository extends JpaRepository<ProductQuantity
             JOIN FETCH m.dietDay 
             WHERE pq.quantityId = :quantityId
             """)
-    public ProductQuantity findByIdWithMealAndDietDay(@Param(value = "quantityId") Long id);
+    public Optional<ProductQuantity> findByIdWithMealAndDietDay(@Param(value = "quantityId") Long id);
 }
