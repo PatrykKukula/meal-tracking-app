@@ -18,7 +18,7 @@ public interface ProductQuantityRepository extends JpaRepository<ProductQuantity
             SELECT pq FROM ProductQuantity pq 
             JOIN FETCH pq.meal m 
             JOIN FETCH m.dietDay 
-            WHERE pq.quantityId = :quantityId
+            WHERE pq.productQuantityId = :quantityId
             """)
     public Optional<ProductQuantity> findByIdWithMealAndDietDay(@Param(value = "quantityId") Long id);
 }
