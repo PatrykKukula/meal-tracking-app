@@ -17,11 +17,15 @@ import java.util.List;
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, String> {
 
     @NativeQuery("""
-            SELECT * FROM OutboxEvent 
+            SELECT * FROM outbox_event 
             WHERE status = 'NEW' 
+            ORDER BY
+            created_at 
+            ASC 
             FOR UPDATE SKIP LOCKED
+            LIMIT 100
             """)
-    List<OutboxEvent> getUnsentEvents(Pageable pageable);
+    List<OutboxEvent> getUnsentEvents();
 
     @Query("""
             DELETE FROM OutboxEvent e 
