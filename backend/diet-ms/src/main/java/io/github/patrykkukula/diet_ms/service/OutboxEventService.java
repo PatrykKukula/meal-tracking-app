@@ -31,11 +31,11 @@ public class OutboxEventService {
      */
     @Scheduled(fixedRate = 30000)
     public void sendEvents() {
-        log.info("Invoking sendEvents() in product_ms");
+        log.info("Invoking sendEvents() in diet_ms");
 
         AtomicInteger count = new AtomicInteger();
 
-        repository.getUnsentEvents(PageRequest.of(0, 100, Sort.by("createdAt").ascending()))
+        repository.getUnsentEvents()
                 .forEach(event -> {
                     BasicProductEvent productEvent = eventFactory.createEvent(event);
                     log.info("Attempt to send event. Event type: {}, payload: {}", event.getEventType(),
