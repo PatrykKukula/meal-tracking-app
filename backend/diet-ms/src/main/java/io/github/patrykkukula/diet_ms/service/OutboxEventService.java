@@ -71,7 +71,7 @@ public class OutboxEventService {
     public void removeEvents() {
         log.info("Invoking removeEvents() in product_ms");
 
-        LocalDateTime delay = LocalDateTime.now().minusHours(12);       //delay to prevent removing unsent events
+        LocalDateTime delay = LocalDateTime.now().minusHours(1);       //delay to prevent removing unsent events
 
         int removed = repository.deleteSentEvents(delay, DEAD, SENT);
 

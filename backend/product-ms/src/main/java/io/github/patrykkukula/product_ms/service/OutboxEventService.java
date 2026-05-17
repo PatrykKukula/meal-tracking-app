@@ -67,11 +67,11 @@ public class OutboxEventService {
         Method to remove sent or dead events
      */
     @Transactional
-    @Scheduled(cron = "0 * * * * MON-FRI")
+    @Scheduled(cron = "0 * * * * MON-SUN")
     public void removeEvents() {
         log.info("Invoking removeEvents() in product_ms");
 
-        LocalDateTime delay = LocalDateTime.now().minusHours(12);       //delay to prevent removing unsent events
+        LocalDateTime delay = LocalDateTime.now().minusHours(1);       //delay to prevent removing unsent events
 
         int removed = repository.deleteSentEvents(delay, DEAD, SENT);
 
