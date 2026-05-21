@@ -40,9 +40,6 @@ public class ProductSnapshot {
 
     private String ownerUsername;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSnapshot")
-    private List<ProductQuantity> productQuantities = new ArrayList<>();
-
     public static ProductSnapshot fromEvent(ProductCreatedEvent event) {
         ProductSnapshot productSnapshot = new ProductSnapshot();
         productSnapshot.setProductId(event.productId());
