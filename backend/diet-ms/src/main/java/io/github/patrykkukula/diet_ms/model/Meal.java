@@ -40,7 +40,14 @@ public class Meal {
 
     public static Meal fromDto(MealDto dto) {
         Meal meal = new Meal();
-        meal.setName(dto.getName());
+        if (dto.getName() == null || dto.getName().isEmpty()) {
+            meal.setName(DEFAULT_MEAL_NAME);
+        }
+        else {
+            meal.setName(dto.getName());
+        }
         return meal;
     }
+
+    private static final String DEFAULT_MEAL_NAME = "Meal";
 }
